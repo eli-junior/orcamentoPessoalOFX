@@ -34,37 +34,37 @@ clean: ## Remove arquivos de cache do projeto
 
 .PHONY: test run admin populate migrate migrations shell ## @ Application - See pyproject.toml
 test: ## Executa testes e salva cobertura
-	@pytest
+	@uv run pytest
 
 run: ## Executa a aplicação pelo servidor Django
-	@python manage.py runserver --insecure
+	@uv run manage.py runserver 0.0.0.0:8000
 
 admin: ## Cria usuário admin
-	@python manage.py createsuperuser --username admin --email admin@localhost
+	@uv run manage.py createsuperuser --username admin --email admin@localhost
 
 migrate: ## Verifica novas migrações e as executa
-	@python manage.py makemigrations
-	@python manage.py migrate
-	
+	@uv run manage.py makemigrations
+	@uv run manage.py migrate
+
 
 shell: ## Executa o shell do Django
-	@python manage.py shell_plus --ipython -- --profile=$(PROJECT)
+	@uv run manage.py shell_plus --ipython -- --profile=$(PROJECT)
 
 
 ## @ Linters
-.PHONY: lint format lint_all format_all 
+.PHONY: lint format lint_all format_all
 lint_all: ## Executa flake8 e isort para Verificação do código
-	@flake8 $(PROJECT)
-	@isort $(PROJECT) --check --diff $(ISORT_FLAGS) 
+	@uvx flake8 $(PROJECT)
+	@uvx isort $(PROJECT) --check --diff $(ISORT_FLAGS)
 
 format_all:
-	@isort $(PROJECT) $(ISORT_FLAGS) 
-	@black $(PROJECT)
+	@uvx isort $(PROJECT) $(ISORT_FLAGS)
+	@uvx black $(PROJECT)
 
 lint: ## Executa lint apenas nos arquivos modificados (git).
-	@flake8 $$(git diff --name-only | grep .py)
-	@isort $$(git diff --name-only | grep .py) --check --diff $(ISORT_FLAGS) 
+	@uvx flake8 $$(git diff --name-only | grep .py)
+	@uvx isort $$(git diff --name-only | grep .py) --check --diff $(ISORT_FLAGS)
 
 format: ## Formata apenas os arquivos modificados (git).
-	@black $$(git diff --name-only | grep .py)
-	@isort  $$(git diff --name-only | grep .py) $(ISORT_FLAGS) 
+	@uvx black $$(git diff --name-only | grep .py)
+	@uvx isort  $$(git diff --name-only | grep .py) $(ISORT_FLAGS)
