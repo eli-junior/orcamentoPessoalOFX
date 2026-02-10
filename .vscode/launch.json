@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver"
+            ],
+            "django": true,
+            "justMyCode": true,
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "orcamento_2026.settings",
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}

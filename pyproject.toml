@@ -1,0 +1,58 @@
+[project]
+name = "orcamento-2026"
+version = "0.0.1"
+description = "Le os arquivo OFX dos bancos que utilizo e grava no banco de dados com informações sobre a compra, categoria etc"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "dj-database-url",
+    "django~=6.0",
+    "python-decouple",
+    "whitenoise",
+]
+
+[dependency-groups]
+dev = [
+    "black",
+    "faker",
+    "ipython",
+    "isort",
+    "parameterized",
+    "django-debug-toolbar",
+    "django-extensions",
+    "pytest",
+    "pytest-cov",
+    "pytest-django",
+    "pytest-subtests",
+    "pytest-sugar",
+    "pre-commit"
+]
+
+[tool.black]
+line-length = 140
+target-version = ['py313']
+
+[tool.isort]
+profile = "django"
+line_length = 140
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "orcamento-2026.settings"
+python_files = "test_*.py"
+minversion = "7.4.0"
+pythonpath = "./orcamento-2026/**/test_*.py"
+addopts = """
+    -ra -q -s -x -vvv \
+    --doctest-modules \
+    --disable-pytest-warnings \
+    --cov=orcamento-2026 \
+    --cov-report=html:coverage
+    """
+
+[tool.coverage.report]
+skip_empty = true
+branch = true
+source = "orcamento-2026/**/*.py"
+omit = [
+    "orcamento-2026/**/migrations/*.py"
+]
