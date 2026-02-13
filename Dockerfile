@@ -21,13 +21,15 @@ ENV UV_COMPILE_BYTECODE=1 \
     start="dev" \
     HOME="/app" \
     STATIC_ROOT="/staticfiles" \
-    MEDIA_ROOT="/mediafiles"
+    MEDIA_ROOT="/mediafiles" \
+    TZ="America/Sao_Paulo"
 
 WORKDIR /app
 
 # Ensure 1001 can write to workdir and cache/data dirs
 RUN mkdir -p /app /uv_cache /uv_data /opt/venv /staticfiles /mediafiles \
-    && chown -R 1001:1001 /app /uv_cache /uv_data /opt/venv /staticfiles /mediafiles
+    && chown -R 1001:1001 /app /uv_cache /uv_data /opt/venv /staticfiles /mediafiles \
+    && echo $TZ > /etc/localtime
 
 # Switch to user 1001 for all subsequent operations
 USER 1001
