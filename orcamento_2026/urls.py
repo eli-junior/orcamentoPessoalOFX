@@ -5,14 +5,15 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("orcamento_2026.core.urls")),
+    path("api/", include("orcamento_2026.core.urls")),
 ]
 
 
 if settings.ENVIRONMENT != "production" and settings.DEBUG is True:
     import debug_toolbar
+
     urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
+        path("__debug__/", include(debug_toolbar.urls)),
     ] + urlpatterns
 
 

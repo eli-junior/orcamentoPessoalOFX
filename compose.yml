@@ -17,17 +17,10 @@ services:
       context: .
       args:
         UV_NO_DEV: true
-    # volumes: # - .:/app
     ports:
       - "8000:8000"
     env_file:
       - .env-compose
-    # environment:
-    #   - ENVIRONMENT=development
-    #   - DEBUG=True
-    #   - SECRET_KEY=dev-secret-key-change-me
-    #   - ALLOWED_HOSTS=*
-    #   - DATABASE_URL=postgres://orcamento:orcamento@db:5432/orcamento
     depends_on:
       db:
         condition: service_healthy

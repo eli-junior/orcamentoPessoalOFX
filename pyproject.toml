@@ -11,6 +11,9 @@ dependencies = [
     "gunicorn",
     "python-decouple",
     "whitenoise",
+    "ofxtools>=0.9.5",
+    "python-telegram-bot>=22.6",
+    "django-bolt>=0.6.0",
 ]
 
 [dependency-groups]

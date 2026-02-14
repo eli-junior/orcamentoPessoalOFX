@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # 3rd-party apps
+    "django_bolt",
     # Local apps
     "orcamento_2026.core",
 ]

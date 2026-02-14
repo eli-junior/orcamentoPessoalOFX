@@ -1,7 +1,10 @@
 from django.urls import path
+from bolt import BoltRouter
+from .api import app
 
-from . import views
+router = BoltRouter()
+router.register(app)
 
 urlpatterns = [
-    path("", views.home, name="home"),
+    path("", router.urls),
 ]

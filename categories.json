@@ -1,0 +1,70 @@
+[
+    {
+        "category": "Moradia",
+        "subcategories": [
+            "Aluguel",
+            "Condomínio",
+            "Energia",
+            "Internet",
+            "Manutenção",
+            "Outros"
+        ]
+    },
+    {
+        "category": "Alimentação",
+        "subcategories": [
+            "Supermercado",
+            "Restaurante",
+            "Ifood",
+            "Lanches",
+            "Outros"
+        ]
+    },
+    {
+        "category": "Transporte",
+        "subcategories": [
+            "Combustível",
+            "Uber",
+            "Estacionamento",
+            "Manutenção Veículo",
+            "Outros"
+        ]
+    },
+    {
+        "category": "Saúde",
+        "subcategories": [
+            "Farmácia",
+            "Consultas",
+            "Plano de Saúde",
+            "Academia",
+            "Outros"
+        ]
+    },
+    {
+        "category": "Lazer",
+        "subcategories": [
+            "Cinema",
+            "Viagem",
+            "Streaming",
+            "Jogos",
+            "Outros"
+        ]
+    },
+    {
+        "category": "Educação",
+        "subcategories": [
+            "Cursos",
+            "Livros",
+            "Material Escolar",
+            "Outros"
+        ]
+    },
+    {
+        "category": "Financeiro",
+        "subcategories": [
+            "Tarifas Bancárias",
+            "Impostos",
+            "Outros"
+        ]
+    }
+]
