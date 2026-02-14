@@ -1,52 +1,16 @@
-from datetime import date
 from decimal import Decimal
-from typing import List, Optional
 from django.db.models import Sum
 from django.utils import timezone
-from bolt import App, BoltRequest
-from msgspec import Struct
 
 from orcamento_2026.core.models import Expense, Category
+from orcamento_2026.core.schemas import ExpenseSchema
+from django_bolt import BoltAPI
 
-# Initialize Bolt App
-app = App()
-
-# --- Structs (Schemas) ---
-
-
-class CategorySchema(Struct):
-    id: int
-    name: str
+api = BoltAPI()
 
 
-class ExpenseSchema(Struct):
-    id: int
-    description: str
-    amount: Decimal
-    date: date
-    category_name: Optional[str] = None
-    subcategory_name: Optional[str] = None
-    is_ignored: bool
-
-
-class SummarySchema(Struct):
-    period: str
-    total: Decimal
-    by_category: List[Struct]  # Simplified for now
-
-
-class CreateExpenseInput(Struct):
-    amount: Decimal
-    date: date
-    description: str
-    account_id: int  # Required for manual creation
-
-
-# --- Handlers ---
-
-
-@app.get("/expenses")
-def list_expenses(request: BoltRequest):
+@api.get("/expenses")
+def list_expenses(request):
     """List all expenses not ignored, ordered by date desc."""
     queryset = Expense.objects.filter(is_ignored=False).order_by("-transaction__date")
 
@@ -66,8 +30,8 @@ def list_expenses(request: BoltRequest):
     return results
 
 
-@app.get("/stats/summary")
-def get_summary(request: BoltRequest):
+@api.get("/stats/summary")
+def get_summary(request):
     """Get monthly summary."""
     now = timezone.now()
 
@@ -92,7 +56,3 @@ def get_summary(request: BoltRequest):
             by_category.append({"category": cat.name, "total": cat_sum})
 
     return {"period": f"{year}-{month}", "total": total, "by_category": by_category}
-
-
-# Manual creation endpoint logic pending detailed requirements on "Manual Transaction".
-# For now providing the read-only endpoints primarily used by the verified functional requirements.
