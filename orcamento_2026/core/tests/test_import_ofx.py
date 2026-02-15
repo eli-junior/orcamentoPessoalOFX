@@ -39,52 +39,20 @@ def test_import_ofx_success(account, mock_ofx_parser, mock_open_file):
     mock_ofx_parser.parse.return_value = mock_ofx
 
     # Executa importação
-    ref_month = date(2026, 2, 1)
-    result = import_ofx("dummy.ofx", account, ref_month)
+    result = import_ofx("dummy.ofx", account)
 
     # Verificações
     assert result["transactions_created"] == 1
-    assert result["expenses_created"] == 1
+    # Expenses não são mais criadas
+    assert "expenses_created" not in result
 
     # Verifica se a transação foi criada
     tx = Transaction.objects.get(fitid="fitid-1")
     assert tx.amount == Decimal("-100.50")
     assert tx.account == account
 
-    # Verifica se a despesa foi criada
-    expense = Expense.objects.get(transaction=tx)
-    assert expense.description == "Supermercado"
-    assert expense.reference_month == ref_month
-    assert expense.subcategory.name == "Sem Subcategoria"
-    assert expense.subcategory.category.name == "Sem Categoria"
-
-
-@pytest.mark.django_db
-def test_import_ofx_ignore_positive_values(account, mock_ofx_parser, mock_open_file):
-    # Setup do mock com valor positivo (receita)
-    mock_ofx = MagicMock()
-    mock_transaction = MagicMock()
-    mock_transaction.id = "fitid-win"
-    mock_transaction.amount = 500.00
-    mock_transaction.date = MagicMock()
-    mock_transaction.date.date.return_value = date(2026, 2, 1)
-    mock_transaction.memo = "Salário"
-
-    mock_ofx.account.statement.transactions = [mock_transaction]
-    mock_ofx_parser.parse.return_value = mock_ofx
-
-    # Executa importação
-    ref_month = date(2026, 2, 1)
-    result = import_ofx("dummy.ofx", account, ref_month)
-
-    # Transação é criada, mas despesa não
-    assert result["transactions_created"] == 1
-    assert result["expenses_created"] == 0
-
-    # Verifica se a transação existe
-    assert Transaction.objects.filter(fitid="fitid-win").exists()
-    # Verifica se a despesa NÃO existe
-    assert not Expense.objects.filter(transaction__fitid="fitid-win").exists()
+    # Verifica se a despesa NÃO foi criada
+    assert not Expense.objects.filter(transaction=tx).exists()
 
 
 @pytest.mark.django_db
@@ -105,9 +73,7 @@ def test_import_ofx_duplicate_transaction(account, mock_ofx_parser, mock_open_fi
     mock_ofx_parser.parse.return_value = mock_ofx
 
     # Executa importação
-    ref_month = date(2026, 2, 1)
-    result = import_ofx("dummy.ofx", account, ref_month)
+    result = import_ofx("dummy.ofx", account)
 
     # Nada deve ser criado
     assert result["transactions_created"] == 0
-    assert result["expenses_created"] == 0

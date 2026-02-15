@@ -26,12 +26,20 @@ class SubCategoryAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
 
+class ExpenseInline(admin.StackedInline):
+    model = Expense
+    extra = 1
+    max_num = 1
+    autocomplete_fields = ["subcategory"]
+
+
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ("date", "amount", "account", "memo", "fitid")
     list_filter = ("account", "date")
     search_fields = ("memo", "fitid")
     date_hierarchy = "date"
+    inlines = [ExpenseInline]
 
 
 @admin.register(Expense)

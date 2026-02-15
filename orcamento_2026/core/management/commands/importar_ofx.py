@@ -1,7 +1,6 @@
 import os
 import shutil
 import traceback
-from datetime import date, timedelta
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from orcamento_2026.core.models import Account
@@ -70,47 +69,12 @@ class Command(BaseCommand):
             self.stdout.write("\nNenhuma conta encontrada. Vamos criar uma.")
             account = self.create_account()
 
-        # 3. Selecionar mês de referência
-        today = date.today()
-        first_current = today.replace(day=1)
-
-        # Mês anterior
-        last_month = first_current - timedelta(days=1)
-        first_previous = last_month.replace(day=1)
-
-        # Próximo mês
-        # Adiciona 32 dias para garantir que caia no próximo mês, depois ajusta para dia 1
-        next_month_date = first_current + timedelta(days=32)
-        first_next = next_month_date.replace(day=1)
-
-        months = {1: first_previous, 2: first_current, 3: first_next}
-
-        self.stdout.write("\nPara qual mês de referência esta importação pertence?")
-        self.stdout.write(f"1. Mês Anterior ({first_previous.strftime('%Y-%m')})")
-        self.stdout.write(f"2. Mês Atual ({first_current.strftime('%Y-%m')})")
-        self.stdout.write(f"3. Próximo Mês ({first_next.strftime('%Y-%m')})")
-
-        while True:
-            try:
-                period_choice = int(input("Escolha o período (1-3): "))
-                if period_choice in months:
-                    reference_month = months[period_choice]
-                    break
-                else:
-                    self.stdout.write(self.style.ERROR("Opção inválida."))
-            except ValueError:
-                self.stdout.write(self.style.ERROR("Entrada inválida."))
-
         # 4. Executar importação
-        self.stdout.write(f"\nImportando '{selected_file}' para conta '{account.name}' com referência {reference_month}...")
+        self.stdout.write(f"\nImportando '{selected_file}' para conta '{account.name}'...")
 
         try:
-            result = import_ofx(file_path, account, reference_month)
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Sucesso! {result['transactions_created']} transações novas, {result['expenses_created']} despesas criadas."
-                )
-            )
+            result = import_ofx(file_path, account)
+            self.stdout.write(self.style.SUCCESS(f"Sucesso! {result['transactions_created']} transações novas."))
             shutil.move(file_path, os.path.join(path_procesados, selected_file))
 
         except Exception as e:
