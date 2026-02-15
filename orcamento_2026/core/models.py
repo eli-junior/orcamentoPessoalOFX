@@ -71,3 +71,26 @@ class Expense(models.Model):
     class Meta:
         verbose_name = "Despesa"
         verbose_name_plural = "Despesas"
+
+
+class TransactionSuggestion(models.Model):
+    STATUS_CHOICES = [
+        ("PENDING", "Pendente"),
+        ("ACCEPTED", "Aceito"),
+        ("REJECTED", "Rejeitado"),
+        ("EDITED", "Editado"),
+    ]
+
+    transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE, related_name="suggestion")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Sugestão para {self.transaction}"
+
+    class Meta:
+        verbose_name = "Sugestão de Transação"
+        verbose_name_plural = "Sugestões de Transação"
