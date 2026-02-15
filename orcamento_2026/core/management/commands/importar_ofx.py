@@ -1,4 +1,6 @@
 import os
+import shutil
+import traceback
 from datetime import date, timedelta
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -12,8 +14,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # 1. Verificar e listar arquivos
         path_dados = os.path.join(settings.BASE_DIR, "dados")
+        path_procesados = os.path.join(path_dados, "procesados")
         if not os.path.exists(path_dados):
-            os.makedirs(path_dados)
+            os.makedirs(path_dados, exist_ok=True)
+            os.makedirs(path_procesados, exist_ok=True)
             self.stdout.write(self.style.WARNING(f"Pasta '{path_dados}' criada. Coloque seus arquivos .ofx lá."))
             return
 
@@ -107,13 +111,13 @@ class Command(BaseCommand):
                     f"Sucesso! {result['transactions_created']} transações novas, {result['expenses_created']} despesas criadas."
                 )
             )
+            shutil.move(file_path, os.path.join(path_procesados, selected_file))
+
         except Exception as e:
             # Em caso de erro, logar e exibir
             self.stdout.write(self.style.ERROR(f"Erro na importação: {e}"))
-            # Opcional: imprimir traceback se DEBUG=True
-            import traceback
-
-            traceback.print_exc()
+            if settings.DEBUG:
+                traceback.print_exc()
 
     def create_account(self):
         """Helper para criar uma nova conta via CLI"""
@@ -127,7 +131,7 @@ class Command(BaseCommand):
         self.stdout.write("K - Cartão")
 
         ac_type = input("Escolha o tipo (C/K): ").strip().upper()
-        while ac_type not in ["C", "K"]:
+        while ac_type not in ("C", "K"):
             ac_type = input("Tipo inválido. Escolha C ou K: ").strip().upper()
 
         return Account.objects.create(name=name, type=ac_type)

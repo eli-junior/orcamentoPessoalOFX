@@ -40,7 +40,7 @@ profile = "django"
 line_length = 140
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "orcamento-2026.settings"
+DJANGO_SETTINGS_MODULE = "orcamento_2026.settings"
 python_files = "test_*.py"
 minversion = "7.4.0"
 pythonpath = "./orcamento-2026/**/test_*.py"
