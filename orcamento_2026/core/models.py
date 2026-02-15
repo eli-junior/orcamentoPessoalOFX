@@ -12,6 +12,10 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Categoria"
+        verbose_name_plural = "Categorias"
+
 
 class SubCategory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
@@ -19,6 +23,10 @@ class SubCategory(models.Model):
 
     def __str__(self):
         return f"{self.category.name} - {self.name}"
+
+    class Meta:
+        verbose_name = "Subcategoria"
+        verbose_name_plural = "Subcategorias"
 
 
 class Account(models.Model):
@@ -28,6 +36,10 @@ class Account(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Conta"
+        verbose_name_plural = "Contas"
 
 
 class Transaction(models.Model):
@@ -41,6 +53,10 @@ class Transaction(models.Model):
     def __str__(self):
         return f"{self.date} - {self.amount} ({self.memo[:20]})"
 
+    class Meta:
+        verbose_name = "Transação"
+        verbose_name_plural = "Transações"
+
 
 class Expense(models.Model):
     transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE, null=True, blank=True)
@@ -51,3 +67,7 @@ class Expense(models.Model):
 
     def __str__(self):
         return self.description
+
+    class Meta:
+        verbose_name = "Despesa"
+        verbose_name_plural = "Despesas"
