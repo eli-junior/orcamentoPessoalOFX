@@ -39,9 +39,10 @@ class Command(BaseCommand):
 
             while True:
                 try:
-                    self.stdout.write("\nOpções: [A]=Aceitar Sugestão, [E]=Editar/Inserir, [I]=Ignorar/Pular, [Q]=Sair")
                     if not suggestion:
-                        self.stdout.write(self.style.NOTICE("Nota: Sem sugestão disponível. Use [E] para inserir dados."))
+                        self.stdout.write("\nOpções: [E]=Editar/Inserir, [I]=Ignorar/Pular, [Q]=Sair")
+                    else:
+                        self.stdout.write("\nOpções: [A]=Aceitar Sugestão, [E]=Editar/Inserir, [I]=Ignorar/Pular, [Q]=Sair")
 
                     choice = input("Sua escolha: ").strip().upper()
 

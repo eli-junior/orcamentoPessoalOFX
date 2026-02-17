@@ -30,13 +30,23 @@ class Command(BaseCommand):
 
         # 2. Categorias e Subcategorias
         categories_data = [
-            {"category": "Moradia", "subcategories": ["Aluguel", "Condomínio", "Energia", "Internet", "Manutenção", "Outros"]},
-            {"category": "Alimentação", "subcategories": ["Supermercado", "Restaurante", "Ifood", "Lanches", "Outros"]},
-            {"category": "Transporte", "subcategories": ["Combustível", "Uber", "Estacionamento", "Manutenção Veículo", "Outros"]},
-            {"category": "Saúde", "subcategories": ["Farmácia", "Consultas", "Plano de Saúde", "Academia", "Outros"]},
+            {
+                "category": "Moradia",
+                "subcategories": ["Aluguel", "Condomínio", "Energia", "Internet", "Manutenção", "Utensílios", "Eletrônicos", "Outros"],
+            },
+            {
+                "category": "Alimentação",
+                "subcategories": ["Supermercado", "Restaurante", "Delivery", "Feira", "Lanches", "Bares", "Outros"],
+            },
+            {"category": "Cuidados Pessoais", "subcategories": ["Roupas", "Salão de Beleza", "Acessórios", "Outros"]},
+            {
+                "category": "Transporte",
+                "subcategories": ["Abastecimento", "Transporte APP", "Lavagem", "Estacionamento", "Manutenção Veículo", "Outros"],
+            },
+            {"category": "Saúde", "subcategories": ["Farmácia", "Suplementos", "Plano de Saúde", "Academia", "Outros"]},
             {"category": "Lazer", "subcategories": ["Cinema", "Viagem", "Streaming", "Jogos", "Outros"]},
-            {"category": "Educação", "subcategories": ["Cursos", "Livros", "Material Escolar", "Outros"]},
-            {"category": "Financeiro", "subcategories": ["Tarifas Bancárias", "Impostos", "Outros"]},
+            {"category": "Educação", "subcategories": ["Cursos", "Livros", "Materiais", "Outros"]},
+            {"category": "Financeiro", "subcategories": ["Tarifas", "Impostos", "Outros"]},
         ]
 
         for item in categories_data:

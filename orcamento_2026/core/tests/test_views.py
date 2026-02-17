@@ -4,7 +4,7 @@ from django.test import Client
 client = Client()
 
 
-@pytest.mark.djangodb
+@pytest.mark.django_db
 def test_home():
     global client
     response = client.get("/")

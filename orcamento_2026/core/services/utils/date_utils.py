@@ -1,15 +1,24 @@
+"""Utilitários para manipulação de datas."""
+
 from datetime import date
+
 from dateutil.relativedelta import relativedelta
 
 
-def get_period_options(base_date: date | None = None, num_options: int = 3, ref_day: int = 20) -> list[tuple[date, str]]:
+def get_period_options(
+    base_date: date | None = None,
+    num_options: int = 3,
+    ref_day: int = 20,
+) -> list[tuple[date, str]]:
     """
     Retorna uma lista de opções de datas de referência baseadas na data base.
+
     As opções são: mês passado, mês corrente, próximo mês.
 
     Args:
         base_date: Data base para o cálculo. Se None, usa o dia atual.
         num_options: Número de opções a retornar (default 3).
+        ref_day: Dia do mês para usar como referência.
 
     Returns:
         Lista de tuplas (data_referencia, label_descritiva)
@@ -20,7 +29,7 @@ def get_period_options(base_date: date | None = None, num_options: int = 3, ref_
     # Normaliza para o dia de referência do mês
     current_month = base_date.replace(day=ref_day)
 
-    options = []
+    options: list[tuple[date, str]] = []
 
     # Mês passado
     prev_month = current_month - relativedelta(months=1)
