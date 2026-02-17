@@ -32,17 +32,26 @@ clean: ## Remove arquivos de cache do projeto
 	@echo "Done!"
 
 
-.PHONY: test run admin populate migrate migrations shell ## @ Application - See pyproject.toml
+.PHONY: test run admin popular importar consolidar migrar_db shell ## @ Application - See pyproject.toml
 test: ## Executa testes e salva cobertura
 	@uv run pytest
 
 run: ## Executa a aplicação pelo servidor Django
-	@uv run manage.py runserver 0.0.0.0:8000
+	@uv run manage.py collectstatic --no-input && uv run manage.py runserver 0.0.0.0:8000
 
 admin: ## Cria usuário admin
-	@uv run manage.py createsuperuser --username admin --email admin@localhost
+	@uv run manage.py createsuperuser --user eli --email elijunior.py@gmail.com
 
-migrate: ## Verifica novas migrações e as executa
+popular: ## Popula o banco de dados
+	@uv run manage.py popular
+
+importar: ## Importa arquivos OFX
+	@uv run manage.py importar
+
+consolidar: ## Consolidar transações
+	@uv run manage.py consolidar
+
+migrar_db: ## Verifica novas migrações e as executa
 	@uv run manage.py makemigrations
 	@uv run manage.py migrate
 

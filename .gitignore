@@ -1,5 +1,10 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+dados/*
+coverage/
 .venv/
 .env
 .env-compose
+*.sqlite3
+.coverage
+staticfiles/*

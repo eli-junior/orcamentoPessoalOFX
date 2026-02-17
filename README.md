@@ -1,121 +1,139 @@
 <div align="center" style="text-align: center;">
-  <a href="#-sobre">Sobre</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-tecnologias">Tecnologias</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-recursos-disponiveis">Recursos</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-iniciando-o-projeto">Iniciando o Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-testes">Testes</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-contribuindo">Contribuindo</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-  <a href="#-autores">Autores</a>
+  <h1>Orçamento 2026</h1>
+  <p>Backend para gerenciamento de orçamento pessoal, focado em processamento de arquivos OFX e categorização inteligente.</p>
+
+  <p>
+    <a href="#-sobre">Sobre</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#-tecnologias">Tecnologias</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#-recursos">Comandos</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#-iniciando-o-projeto">Instalação</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#-testes">Testes</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#-contribuindo">Contribuindo</a>
+  </p>
 </div>
 
 ## 🤔 Sobre
 
-O [**Orcamento 2026**](https://link) é um software de processamento Backend, que fornece **APIs** para...
+O **Orcamento 2026** é um sistema de backend desenvolvido em Django para auxiliar no controle financeiro pessoal. Ele permite a importação de extratos bancários (arquivos OFX), consolidação de transações e sugestão automática de categorias utilizando inteligência artificial.
 
 ## 🚀 Tecnologias
 
 Esse projeto foi desenvolvido com as seguintes tecnologias:
 
-***General***:
+- [Django](https://www.djangoproject.com/) - Framework Web de alto nível
+- [PostgreSQL](https://www.postgresql.org/) - Banco de Dados Relacional
+- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) - Containerização
+- [UV](https://github.com/astral-sh/uv) - Gerenciador de pacotes e projetos Python
+- [Django Extensions](https://django-extensions.readthedocs.io/) - Extensões úteis para desenvolvimento
 
-- [Django](https://pypi.org/project/fastapi/)
-- [Python Decouple](https://pypi.org/project/python-decouple/)
-- [DJ Database URL](https://pypi.org/project/dj-database-url/)
-- [Django Extensions](https://pypi.org/project/django-extensions/)
+## ✨ Recursos e Comandos
 
-## ✨ Recursos Disponiveis
+O projeto possui diversos comandos de gerenciamento (`management commands`) para facilitar as operações do dia a dia:
 
-Os recursos disponíveis da aplicação podem ser encontrados no  [swagger](https://swagger.io/). Para acessa-los, acrescente "/docs/" ao final da URL da aplicação.
+### 📥 Importar OFX
+Importa transações de arquivos OFX localizados no diretório configurado (padrão: `dados/ofx`).
+
+```bash
+docker compose run --rm app python manage.py importar
+# ou localmente
+python manage.py importar
+```
+
+### 🔄 Consolidar Transações
+Processa as transações importadas, convertendo-as em despesas e aplicando regras de negócio.
+
+```bash
+docker compose run --rm app python manage.py consolidar
+```
+
+### 🤖 Sugerir Categorias (IA)
+Utiliza IA para analisar transações pendentes e sugerir categorias e subcategorias prováveis.
+
+```bash
+docker compose run --rm app python manage.py sugerir
+```
+
+### 🌱 Popular Banco de Dados
+Popula o banco de dados com dados iniciais, como contas padrão e árvore de categorias.
+
+```bash
+docker compose run --rm app python manage.py popular
+```
 
 ## 🏃 Iniciando o Projeto
 
-### **Sem Docker** 🖥️
+### **Com Docker (Recomendado)** 🐳
 
-Para iniciar essa aplicação sem o docker, você irá precisar de [python](https://www.python.org/), [virtualenv](https://virtualenv.pypa.io/en/latest/) instalados no seu computador.
-Recomendamos fortemente o uso do [Pyenv](https://github.com/pyenv/pyenv) para o desenvolvimento de suas aplicações.
-```bash
-  # Crie o ambiente virtual para seu projeto python
+Certifique-se de ter o Docker e Docker Compose instalados.
 
-  $ python -m venv .venv
+1. **Subir os serviços**:
+   ```bash
+   docker compose up -d
+   ```
+   Isso iniciará a aplicação Django e o banco de dados PostgreSQL.
 
-  # Ative o environment
+2. **Aplicar as migrações**:
+   ```bash
+   docker compose run --rm app python manage.py migrate
+   ```
 
-  $ source ./.venv/bin/activate
+3. **Popular dados iniciais (opcional)**:
+   ```bash
+   docker compose run --rm app python manage.py popular
+   ```
 
-  # Instale as dependências
+A aplicação estará disponível em `http://localhost:8000`.
 
-  $ make install
+### **Execução Local (Sem Docker)** 🖥️
 
-  # Inicie a aplicação
+Você precisará do [Python 3.12+](https://www.python.org/) e [UV](https://github.com/astral-sh/uv) instalados.
 
-  $ make run
+1. **Instalar dependências**:
+   ```bash
+   uv sync
+   ```
 
-  # Para desativar a máquina virtual python (virtualenv):
+2. **Ativar o ambiente virtual**:
+   ```bash
+   source .venv/bin/activate
+   ```
 
-  $ deactivate
-```
+3. **Configurar variáveis de ambiente**:
+   Crie um arquivo `.env` na raiz baseado no `.env-compose` ou configure as variáveis necessárias para conexão com banco de dados local.
+
+4. **Executar migrações e rodar**:
+   ```bash
+   python manage.py migrate
+   python manage.py runserver
+   ```
+
+Também é possível usar o `Makefile` para atalhos:
+- `make install`: Instala dependências
+- `make run`: Roda o servidor
+- `make format`: Formata o código
 
 ## 🚨 Testes
-### **Rodando os Testes** ✅
+
+O projeto utiliza `pytest` para testes automatizados.
 
 ```bash
-  ## Para rodar os testes unitários
+# Via Docker
+docker compose run --rm app pytest
 
-  $ make test
+# Localmente
+pytest
+# ou
+make test
 ```
-
-### **Desenvolvendo com Testes** 🔥
-
-O time utiliza a metologia [TDD](https://testdriven.io/blog/modern-tdd/) para implementação de novas funcionalidades, caso não possua conhecimento, é recomendável a leitura do artigo citado.
 
 ## 💁🏻 Contribuindo
 
-1. **Clone** o projeto:
-2. Crie sua **feature**/**fix** branch seguindo o padrão e faça suas modificações:
-
-```bash
-  $ git checkout -b feature/nome_da_branch
-```
-
-
-3. **Formate** os arquivos:
-```bash
-  ## Para formatar os arquivos
-
-  $ make format
-```
-5. **Commit** suas modificações:
-
-```bash
-  # Padrão seguido (message downcase):
-  #
-  # feat: a new feature
-  # fix: a bug fix
-  # docs: documentation only changes
-  # style: changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
-  # refactor: a code change that neither fixes a bug nor adds a feature
-  # perf: a code change that improves performance
-  # test: adding missing or correcting existing tests
-  # support: changes to the build process or auxiliary tools and libraries such
-  # as documentation generation or continous integration configuration
-
-  $ git commit -m 'feat: insert your message'
-```
-
-6. **Push** para a branch:
-
-```bash
-  $ git push origin feature/103574
-```
-
-7. Realize um **pull request** :D
-8. Realize um merge local na branch master com as suas alterações, e em seguida a delete.
-
-```bash
-  $ git checkout master
-  $ git merge feature/nome_da_branch
-  $ git branch -d feature/nome_da_branch
+1. Faça um **Clone** do projeto.
+2. Crie uma branch para sua feature (`git checkout -b feature/minha-feature`).
+3. Faça suas alterações e commite (`git commit -m 'feat: Adiciona nova funcionalidade'`).
+4. Envie para o repositório (`git push origin feature/minha-feature`).
+5. Abra um Pull Request.
 
 ## ✍️ Autores
 
-[Melo Brothers](https://github.com/melo-brothers/)
+Desenvolvido por **Eli Júnior** e colaboradores.
