@@ -29,16 +29,20 @@ class Command(BaseCommand):
 
         self.stdout.write(f"Gerando sugestões para {total} transações...")
 
-        for idx, tx in enumerate(transactions_to_process, 1):
-            self.stdout.write(f"[{idx}/{total}] Analisando: {tx.memo}...", ending="")
-            sys.stdout.flush()
+        try:
+            for idx, tx in enumerate(transactions_to_process, 1):
+                self.stdout.write(f"[{idx}/{total}] Analisando: {tx.memo}...", ending="")
+                sys.stdout.flush()
 
-            suggestion = generate_suggestion_for_transaction(tx)
+                suggestion = generate_suggestion_for_transaction(tx)
 
-            if suggestion:
-                self.stdout.write(self.style.SUCCESS(" OK"))
-            else:
-                self.stdout.write(self.style.WARNING(" Falha"))
+                if suggestion:
+                    self.stdout.write(self.style.SUCCESS(" OK"))
+                else:
+                    self.stdout.write(self.style.WARNING(" Falha"))
 
-        self.stdout.write(self.style.SUCCESS("\nGeração de sugestões concluída!"))
-        self.stdout.write("Execute 'uv run manage.py consolidar' para revisar e aprovar as sugestões.")
+            self.stdout.write(self.style.SUCCESS("\nGeração de sugestões concluída!"))
+            self.stdout.write("Execute 'uv run manage.py consolidar' para revisar e aprovar as sugestões.")
+
+        except KeyboardInterrupt:
+            self.stdout.write("\nOperação interrompida pelo usuário.")

@@ -48,6 +48,7 @@ class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
+    reference_date = models.DateField(null=True, blank=True)
     memo = models.TextField()
 
     def __str__(self):
@@ -75,17 +76,17 @@ class Expense(models.Model):
 
 class TransactionSuggestion(models.Model):
     STATUS_CHOICES = [
-        ("PENDING", "Pendente"),
-        ("ACCEPTED", "Aceito"),
-        ("REJECTED", "Rejeitado"),
-        ("EDITED", "Editado"),
+        ("PENDENTE", "Pendente"),
+        ("ACEITO", "Aceito"),
+        ("REJEITADO", "Rejeitado"),
+        ("EDITADO", "Editado"),
     ]
 
     transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE, related_name="suggestion")
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
     description = models.CharField(max_length=255, blank=True, null=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDING")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDENTE")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

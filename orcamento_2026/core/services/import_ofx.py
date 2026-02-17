@@ -1,5 +1,6 @@
 import logging
 from decimal import Decimal
+from datetime import date
 
 from ofxparse import OfxParser
 
@@ -8,7 +9,7 @@ from orcamento_2026.core.models import Account, Transaction
 logger = logging.getLogger(__name__)
 
 
-def import_ofx(file_path: str, account: Account):
+def import_ofx(file_path: str, account: Account, reference_date: date = None):
     """
     Importa transações de um arquivo OFX para uma conta específica.
     """
@@ -25,7 +26,8 @@ def import_ofx(file_path: str, account: Account):
         # Cria a transação se não existir (baseado no fitid)
         # O FITID é a chave para evitar duplicatas
         _, created = Transaction.objects.get_or_create(
-            fitid=tx.id, defaults={"account": account, "amount": amount, "date": date_obj, "memo": tx.memo or ""}
+            fitid=tx.id,
+            defaults={"account": account, "amount": amount, "date": date_obj, "memo": tx.memo or "", "reference_date": reference_date},
         )
 
         if created:
