@@ -80,12 +80,14 @@ def dashboard(request):
         is_ignored=False,
     ).count()
 
+    from django.db.models.functions import Abs, TruncMonth
+
     total_amount = Expense.objects.filter(
         reference_month__gte=start_date,
         reference_month__lte=end_date,
         is_ignored=False,
     ).aggregate(
-        total=Sum("transaction__amount")
+        total=Sum(Abs("transaction__amount"))
     )["total"] or Decimal("0")
 
     unconsolidated_count = get_unconsolidated_transactions().count()
@@ -99,20 +101,24 @@ def dashboard(request):
             is_ignored=False,
         )
         .values("subcategory__category__name")
-        .annotate(total=Sum("transaction__amount"))
+        .annotate(total=Sum(Abs("transaction__amount")))
         .order_by("-total")
     )
 
     pie_data = go.Pie(
         labels=[item["subcategory__category__name"] for item in expenses_by_category],
         values=[float(item["total"]) for item in expenses_by_category],
-        hole=0.4,
-        marker=dict(colors=["#4f46e5", "#7c3aed", "#db2777", "#ea580c", "#16a34a", "#0891b2", "#8b5cf6"]),
+        hole=0.5,
+        textinfo="label+percent",
+        textposition="outside",
+        automargin=True,
+        marker=dict(colors=["#6366f1", "#8b5cf6", "#ec4899", "#f97316", "#22c55e", "#06b6d4", "#a855f7"]),
     )
     pie_layout = go.Layout(
         title="Despesas por Categoria",
-        showlegend=True,
-        legend=dict(orientation="h", yanchor="bottom", y=-0.1),
+        showlegend=False,
+        margin=dict(l=20, r=20, t=40, b=20),
+        height=350,
     )
     pie_chart = json.dumps(go.Figure(data=[pie_data], layout=pie_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -123,25 +129,32 @@ def dashboard(request):
             reference_month__lte=end_date,
             is_ignored=False,
         )
-        .values("reference_month")
-        .annotate(total=Sum("transaction__amount"))
-        .order_by("reference_month")
+        .annotate(month=TruncMonth("reference_month"))
+        .values("month")
+        .annotate(total=Sum(Abs("transaction__amount")))
+        .order_by("month")
     )
 
     line_data = go.Scatter(
-        x=[item["reference_month"].strftime("%Y-%m") for item in monthly_data],
+        x=[item["month"].strftime("%b %Y") for item in monthly_data],
         y=[float(item["total"]) for item in monthly_data],
-        mode="lines+markers",
-        line=dict(color="#4f46e5", width=3),
-        marker=dict(size=8),
+        mode="lines+markers+text",
+        text=[f"R$ {float(item['total']):.0f}" for item in monthly_data],
+        textposition="top center",
+        line=dict(color="#6366f1", width=3, shape="spline"),
+        marker=dict(size=8, color="#4338ca", line=dict(width=2, color="white")),
         fill="tozeroy",
-        fillcolor="rgba(79, 70, 229, 0.1)",
+        fillcolor="rgba(99, 102, 241, 0.1)",
     )
     line_layout = go.Layout(
-        title="Evolução Mensal de Despesas",
-        xaxis=dict(title="Mês"),
-        yaxis=dict(title="Valor (R$)", tickformat=".2f"),
+        title="Evolução Mensal",
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", zeroline=False),
         showlegend=False,
+        margin=dict(l=40, r=20, t=40, b=20),
+        height=350,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
     )
     line_chart = json.dumps(go.Figure(data=[line_data], layout=line_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -153,7 +166,7 @@ def dashboard(request):
             is_ignored=False,
         )
         .values("subcategory__name")
-        .annotate(total=Sum("transaction__amount"))
+        .annotate(total=Sum(Abs("transaction__amount")))
         .order_by("-total")[:10]
     )
 
@@ -161,14 +174,19 @@ def dashboard(request):
         x=[float(item["total"]) for item in top_subcategories],
         y=[item["subcategory__name"] for item in top_subcategories],
         orientation="h",
-        marker=dict(color="#4f46e5"),
+        marker=dict(color="#6366f1", opacity=0.9),
+        text=[f"R$ {float(item['total']):.0f}" for item in top_subcategories],
+        textposition="auto",
     )
     bar_layout = go.Layout(
         title="Top 10 Subcategorias",
-        xaxis=dict(title="Valor (R$)"),
-        yaxis=dict(autorange="reversed"),
+        xaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)"),
+        yaxis=dict(autorange="reversed", showgrid=False),
         showlegend=False,
-        margin=dict(l=150),
+        margin=dict(l=150, r=20, t=40, b=20),
+        height=400,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
     )
     bar_chart = json.dumps(go.Figure(data=[bar_data], layout=bar_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
@@ -180,20 +198,26 @@ def dashboard(request):
             is_ignored=False,
         )
         .values("transaction__account__name")
-        .annotate(total=Sum("transaction__amount"))
+        .annotate(total=Sum(Abs("transaction__amount")))
         .order_by("-total")
     )
 
     account_data = go.Bar(
         x=[item["transaction__account__name"] for item in expenses_by_account],
         y=[float(item["total"]) for item in expenses_by_account],
-        marker=dict(color=["#4f46e5", "#7c3aed", "#db2777", "#ea580c"]),
+        marker=dict(color=["#6366f1", "#8b5cf6", "#ec4899", "#f97316"], opacity=0.9),
+        text=[f"R$ {float(item['total']):.0f}" for item in expenses_by_account],
+        textposition="auto",
     )
     account_layout = go.Layout(
         title="Despesas por Conta",
-        xaxis=dict(title="Conta"),
-        yaxis=dict(title="Valor (R$)"),
+        xaxis=dict(showgrid=False),
+        yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)"),
         showlegend=False,
+        margin=dict(l=40, r=20, t=40, b=20),
+        height=350,
+        plot_bgcolor="rgba(0,0,0,0)",
+        paper_bgcolor="rgba(0,0,0,0)",
     )
     account_chart = json.dumps(go.Figure(data=[account_data], layout=account_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
