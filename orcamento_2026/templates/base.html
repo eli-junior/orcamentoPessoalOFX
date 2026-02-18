@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full bg-gray-50">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>
+            {% block title %}Orçamento 2026{% endblock %}
+        </title>
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- HTMX -->
+        <script src="https://unpkg.com/htmx.org@1.9.12"
+                integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+                crossorigin="anonymous"></script>
+        <!-- Alpine.js -->
+        <script defer
+                src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+        <!-- Plotly -->
+        <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+        <!-- HTMX Config -->
+        <meta name="htmx-config" content='{"useTemplateFragments": true}'>
+        <style>
+        [x-cloak] { display: none !important; }
+
+        /* Animações HTMX */
+        .htmx-added { animation: fadeIn 0.3s ease-in; }
+        .htmx-removed { animation: fadeOut 0.3s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
+
+        /* Loading spinner */
+        .htmx-request .spinner { display: inline-block !important; }
+        .htmx-request.spinner { display: inline-block !important; }
+        .spinner { display: none; }
+        </style>
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body class="h-full" x-data="{ sidebarOpen: false }">
+        <div class="min-h-full">
+            <!-- Navbar -->
+            <nav class="bg-indigo-600">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div class="flex h-16 items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <a href="{% url 'dashboard' %}" class="text-white text-xl font-bold">💰 Orçamento 2026</a>
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="ml-10 flex items-baseline space-x-4">
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'dashboard' %}"
+                                           class="{% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
+                                            Dashboard
+                                        </a>
+                                        <a href="{% url 'transaction_list' %}"
+                                           class="{% if request.resolver_match.url_name == 'transaction_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
+                                            Transações
+                                        </a>
+                                        <a href="{% url 'expense_list' %}"
+                                           class="{% if request.resolver_match.url_name == 'expense_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
+                                            Despesas
+                                        </a>
+                                        <a href="{% url 'category_list' %}"
+                                           class="{% if request.resolver_match.url_name == 'category_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
+                                            Categorias
+                                        </a>
+                                        <a href="{% url 'suggestion_list' %}"
+                                           class="{% if request.resolver_match.url_name == 'suggestion_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium relative">
+                                            Sugestões Larry
+                                            <span id="pending-suggestions-count"
+                                                  hx-get="{% url 'pending_suggestions_count' %}"
+                                                  hx-trigger="load, every 30s"
+                                                  hx-target="this"
+                                                  hx-swap="innerHTML"></span>
+                                        </a>
+                                        <a href="{% url 'import_ofx' %}"
+                                           class="{% if request.resolver_match.url_name == 'import_ofx' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
+                                            Importar
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="ml-4 flex items-center md:ml-6">
+                                {% if user.is_authenticated %}
+                                    <span class="text-indigo-200 text-sm mr-4">{{ user.username }}</span>
+                                    <form method="post" action="{% url 'logout' %}" class="inline">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="text-white hover:bg-indigo-500 rounded-md px-3 py-2 text-sm font-medium">
+                                            Sair
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <a href="{% url 'login' %}"
+                                       class="text-white hover:bg-indigo-500 rounded-md px-3 py-2 text-sm font-medium">
+                                        Entrar
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Mobile menu button -->
+                        <div class="-mr-2 flex md:hidden">
+                            <button type="button"
+                                    @click="sidebarOpen = !sidebarOpen"
+                                    class="inline-flex items-center justify-center rounded-md bg-indigo-600 p-2 text-indigo-200 hover:bg-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600">
+                                <span class="sr-only">Abrir menu</span>
+                                <svg class="h-6 w-6"
+                                     fill="none"
+                                     viewBox="0 0 24 24"
+                                     stroke-width="1.5"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Mobile menu -->
+                <div x-show="sidebarOpen" x-cloak class="md:hidden">
+                    <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'dashboard' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Dashboard</a>
+                            <a href="{% url 'transaction_list' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Transações</a>
+                            <a href="{% url 'expense_list' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Despesas</a>
+                            <a href="{% url 'category_list' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Categorias</a>
+                            <a href="{% url 'suggestion_list' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Sugestões Larry</a>
+                            <a href="{% url 'import_ofx' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Importar</a>
+                            <div class="border-t border-indigo-700 pt-4 pb-3">
+                                <div class="flex items-center px-5">
+                                    <div class="ml-3">
+                                        <div class="text-base font-medium leading-none text-white">{{ user.username }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 space-y-1 px-2">
+                                    <form method="post" action="{% url 'logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-white hover:bg-indigo-500 hover:text-white">
+                                            Sair
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'login' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Entrar</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+            <!-- Flash messages -->
+            {% if messages %}
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
+                    {% for message in messages %}
+                        <div class="rounded-md {% if message.tags == 'success' %}bg-green-50 text-green-800{% elif message.tags == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %} p-4 mb-4"
+                             role="alert">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    {% if message.tags == 'success' %}
+                                        <svg class="h-5 w-5 text-green-400"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% elif message.tags == 'error' %}
+                                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% else %}
+                                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                        </svg>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium">{{ message }}</p>
+                                </div>
+                                <div class="ml-auto pl-3">
+                                    <button onclick="this.parentElement.parentElement.parentElement.remove()"
+                                            class="inline-flex rounded-md {% if message.tags == 'success' %}bg-green-50 text-green-500 hover:bg-green-100{% elif message.tags == 'error' %}bg-red-50 text-red-500 hover:bg-red-100{% else %}bg-blue-50 text-blue-500 hover:bg-blue-100{% endif %} focus:outline-none">
+                                        <span class="sr-only">Fechar</span>
+                                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            <!-- Main content -->
+            <main class="py-6">
+                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+        <!-- Modal para confirmações -->
+        <div x-data="{ show: false, title: '', message: '', action: '' }"
+             @confirm-modal.window="show = true; title = $event.detail.title; message = $event.detail.message; action = $event.detail.action"
+             x-show="show"
+             x-cloak
+             class="relative z-50"
+             aria-labelledby="modal-title"
+             role="dialog"
+             aria-modal="true">
+            <div x-show="show"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div x-show="show"
+                         x-transition:enter="ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                        <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                            <div class="sm:flex sm:items-start">
+                                <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                    <svg class="h-6 w-6 text-red-600"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="1.5"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                    </svg>
+                                </div>
+                                <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                    <h3 class="text-base font-semibold leading-6 text-gray-900"
+                                        x-text="title"></h3>
+                                    <div class="mt-2">
+                                        <p class="text-sm text-gray-500" x-text="message"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                            <form :action="action" method="post" class="inline">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
+                                    Confirmar
+                                </button>
+                            </form>
+                            <button @click="show = false"
+                                    type="button"
+                                    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>
