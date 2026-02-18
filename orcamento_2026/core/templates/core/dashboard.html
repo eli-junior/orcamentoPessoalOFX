@@ -3,51 +3,54 @@
 {% block title %}Dashboard - Orçamento 2026{% endblock %}
 
 {% block content %}
-    <div class="space-y-6">
+    <div class="space-y-8">
         <!-- Header -->
         <div class="md:flex md:items-center md:justify-between">
             <div class="min-w-0 flex-1">
-                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">Dashboard</h2>
-                <p class="mt-1 text-sm text-gray-500">Visão geral do seu orçamento</p>
+                <h2 class="text-3xl font-bold leading-tight text-gray-900 tracking-tight">Dashboard</h2>
+                <p class="mt-2 text-sm text-gray-500">Visão geral e indicadores do seu orçamento</p>
             </div>
             <div class="mt-4 flex md:ml-4 md:mt-0">
-                <form method="get" class="flex space-x-4">
-                    <div>
-                        <label for="id_start_date" class="sr-only">Data Inicial</label>
+                <form method="get" class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                    <div class="relative rounded-md shadow-sm">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="text-gray-500 sm:text-sm">De</span>
+                        </div>
                         <input type="date"
                                name="start_date"
                                id="id_start_date"
                                value="{{ start_date|date:'Y-m-d' }}"
-                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                               class="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     </div>
-                    <div>
-                        <label for="id_end_date" class="sr-only">Data Final</label>
+                    <div class="relative rounded-md shadow-sm">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                            <span class="text-gray-500 sm:text-sm">Até</span>
+                        </div>
                         <input type="date"
                                name="end_date"
                                id="id_end_date"
                                value="{{ end_date|date:'Y-m-d' }}"
-                               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                               class="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     </div>
                     <button type="submit"
-                            class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-200">
+                        <svg class="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M2.628 1.601C5.028 1.206 7.49 1 10 1s4.973.206 7.372.601a.75.75 0 01.628.74v2.288a2.25 2.25 0 01-.659 1.59l-4.682 4.683a2.25 2.25 0 00-.659 1.59v3.037c0 .684-.31 1.33-.844 1.757l-1.937 1.55A.75.75 0 018 18.25v-5.757a2.25 2.25 0 00-.659-1.591L2.659 6.22A2.25 2.25 0 012 4.629V2.34a.75.75 0 01.628-.74z" clip-rule="evenodd" />
+                        </svg>
                         Filtrar
                     </button>
                 </form>
             </div>
         </div>
         <!-- Stats Cards -->
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <!-- Total Despesas -->
-            <div class="overflow-hidden rounded-lg bg-white shadow">
-                <div class="p-5">
+            <div class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-lg hover:ring-indigo-500/20 hover:-translate-y-1">
+                <div class="p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="rounded-md bg-indigo-500 p-3">
-                                <svg class="h-6 w-6 text-white"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 group-hover:bg-indigo-100 transition-colors duration-300">
+                                <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
                                 </svg>
                             </div>
@@ -55,25 +58,19 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="truncate text-sm font-medium text-gray-500">Total de Despesas</dt>
-                                <dd class="text-2xl font-semibold text-gray-900">
-                                    {{ total_expenses }}
-                                </dd>
+                                <dd class="mt-1 text-3xl font-bold tracking-tight text-gray-900">{{ total_expenses }}</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Valor Total -->
-            <div class="overflow-hidden rounded-lg bg-white shadow">
-                <div class="p-5">
+            <div class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-lg hover:ring-emerald-500/20 hover:-translate-y-1">
+                <div class="p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="rounded-md bg-green-500 p-3">
-                                <svg class="h-6 w-6 text-white"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 group-hover:bg-emerald-100 transition-colors duration-300">
+                                <svg class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
@@ -81,106 +78,131 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="truncate text-sm font-medium text-gray-500">Valor Total</dt>
-                                <dd class="text-2xl font-semibold text-gray-900">
-                                    R$ {{ total_amount|intcomma }}
-                                </dd>
+                                <dd class="mt-1 text-3xl font-bold tracking-tight text-gray-900">R$ {{ total_amount|intcomma }}</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Não Consolidadas -->
-            <div class="overflow-hidden rounded-lg bg-white shadow">
-                <div class="p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="rounded-md bg-yellow-500 p-3">
-                                <svg class="h-6 w-6 text-white"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-                                </svg>
+            <div class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-lg hover:ring-amber-500/20 hover:-translate-y-1">
+                <div class="flex flex-col h-full bg-white">
+                    <div class="p-6 flex-grow">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 group-hover:bg-amber-100 transition-colors duration-300">
+                                    <svg class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="truncate text-sm font-medium text-gray-500">Não Consolidadas</dt>
+                                    <dd class="mt-1 text-3xl font-bold tracking-tight text-gray-900">{{ unconsolidated_count }}</dd>
+                                </dl>
                             </div>
                         </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="truncate text-sm font-medium text-gray-500">Não Consolidadas</dt>
-                                <dd class="text-2xl font-semibold text-gray-900">
-                                    {{ unconsolidated_count }}
-                                </dd>
-                            </dl>
+                    </div>
+                    {% if unconsolidated_count > 0 %}
+                    <div class="bg-gray-50 px-6 py-3 border-t border-gray-100">
+                        <div class="text-sm">
+                            <a href="{% url 'transaction_list' %}?has_expense=no" class="font-medium text-amber-700 hover:text-amber-800 flex items-center group-hover:underline">
+                                Ver transações <span class="ml-1">&rarr;</span>
+                            </a>
                         </div>
                     </div>
-                </div>
-                <div class="bg-gray-50 px-5 py-3">
-                    <div class="text-sm">
-                        <a href="{% url 'transaction_list' %}?has_expense=no"
-                           class="font-medium text-yellow-700 hover:text-yellow-600">Ver transações</a>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
-            <!-- Sugestões Pendentes -->
-            <div class="overflow-hidden rounded-lg bg-white shadow">
-                <div class="p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <div class="rounded-md bg-purple-500 p-3">
-                                <svg class="h-6 w-6 text-white"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-                                </svg>
+            <!-- Sugestões Larry -->
+            <div class="group overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5 transition-all duration-300 hover:shadow-lg hover:ring-purple-500/20 hover:-translate-y-1">
+                <div class="flex flex-col h-full bg-white">
+                    <div class="p-6 flex-grow">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 group-hover:bg-purple-100 transition-colors duration-300">
+                                    <svg class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-5 w-0 flex-1">
+                                <dl>
+                                    <dt class="truncate text-sm font-medium text-gray-500">Sugestões Larry</dt>
+                                    <dd class="mt-1 text-3xl font-bold tracking-tight text-gray-900">{{ pending_suggestions }}</dd>
+                                </dl>
                             </div>
                         </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="truncate text-sm font-medium text-gray-500">Sugestões Larry</dt>
-                                <dd class="text-2xl font-semibold text-gray-900">
-                                    {{ pending_suggestions }}
-                                </dd>
-                            </dl>
+                    </div>
+                    {% if pending_suggestions > 0 %}
+                    <div class="bg-gray-50 px-6 py-3 border-t border-gray-100">
+                        <div class="text-sm">
+                            <a href="{% url 'suggestion_list' %}" class="font-medium text-purple-700 hover:text-purple-800 flex items-center group-hover:underline">
+                                Ver sugestões <span class="ml-1">&rarr;</span>
+                            </a>
                         </div>
                     </div>
-                </div>
-                <div class="bg-gray-50 px-5 py-3">
-                    <div class="text-sm">
-                        <a href="{% url 'suggestion_list' %}"
-                           class="font-medium text-purple-700 hover:text-purple-600">Ver sugestões</a>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
         <!-- Charts Row 1 -->
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div class="overflow-hidden rounded-lg bg-white shadow">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+            <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5">
                 <div class="p-6">
-                    <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Despesas por Categoria</h3>
-                    <div id="pie-chart" style="height: 400px;"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-semibold leading-6 text-gray-900">Despesas por Categoria</h3>
+                        <div class="rounded-full bg-gray-50 p-1.5 mx-auto">
+                            <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="pie-chart" class="w-full h-[400px]"></div>
                 </div>
             </div>
-            <div class="overflow-hidden rounded-lg bg-white shadow">
+            <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5">
                 <div class="p-6">
-                    <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Evolução Mensal</h3>
-                    <div id="line-chart" style="height: 400px;"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-semibold leading-6 text-gray-900">Evolução Mensal</h3>
+                        <div class="rounded-full bg-gray-50 p-1.5 mx-auto">
+                             <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="line-chart" class="w-full h-[400px]"></div>
                 </div>
             </div>
         </div>
         <!-- Charts Row 2 -->
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <div class="overflow-hidden rounded-lg bg-white shadow">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+             <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5">
                 <div class="p-6">
-                    <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Top Subcategorias</h3>
-                    <div id="bar-chart" style="height: 400px;"></div>
+                     <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-semibold leading-6 text-gray-900">Top Subcategorias</h3>
+                        <div class="rounded-full bg-gray-50 p-1.5 mx-auto">
+                             <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="bar-chart" class="w-full h-[400px]"></div>
                 </div>
             </div>
-            <div class="overflow-hidden rounded-lg bg-white shadow">
+            <div class="overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-gray-900/5">
                 <div class="p-6">
-                    <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Despesas por Conta</h3>
-                    <div id="account-chart" style="height: 400px;"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-semibold leading-6 text-gray-900">Despesas por Conta</h3>
+                         <div class="rounded-full bg-gray-50 p-1.5 mx-auto">
+                             <svg class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div id="account-chart" class="w-full h-[400px]"></div>
                 </div>
             </div>
         </div>
