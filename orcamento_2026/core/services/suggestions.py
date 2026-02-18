@@ -2,16 +2,13 @@
 
 import json
 import logging
-from typing import TYPE_CHECKING
 
 import requests
 from decouple import config
 from django.db.models import Q
 
 from orcamento_2026.core.services.utils.db_utils import case_insensitive_get
-
-if TYPE_CHECKING:
-    from orcamento_2026.core.models import Transaction, TransactionSuggestion, Expense
+from orcamento_2026.core.models import Transaction, TransactionSuggestion, Expense
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +16,7 @@ OLLAMA_URL: str = config("OLLAMA_URL", default="http://localhost:11434")
 OLLAMA_MODEL: str = config("OLLAMA_MODEL", default="qwen2.5:1.5b")
 
 
-def get_pending_suggestions() -> TransactionSuggestion.QuerySet:
+def get_pending_suggestions() -> TransactionSuggestion:
     """Retorna sugestões pendentes de revisão."""
     return TransactionSuggestion.objects.filter(status="PENDENTE").select_related("transaction", "category", "subcategory")
 
@@ -37,8 +34,6 @@ def find_similar_expenses(description: str, limit: int = 3) -> list[Expense]:
     Returns:
         Lista de despesas similares
     """
-    from orcamento_2026.core.models import Expense
-
     # Simplificação: pega as primeiras 2 palavras
     parts = description.split()[:2]
     query = Q()
@@ -53,7 +48,7 @@ def find_similar_expenses(description: str, limit: int = 3) -> list[Expense]:
 
 
 def _build_prompt(
-    transaction: "Transaction",
+    transaction: Transaction,
     similar_expenses: list,
     categories: list,
 ) -> str:

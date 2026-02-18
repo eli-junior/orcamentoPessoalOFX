@@ -14,6 +14,9 @@ dependencies = [
     "ofxparse==0.21",
     "requests==2.32.5",
     "python-dateutil>=2.9.0.post0",
+    "django-widget-tweaks==1.5.0",
+    "plotly==6.0.0",
+    "pandas==2.2.3",
 ]
 
 [dependency-groups]
