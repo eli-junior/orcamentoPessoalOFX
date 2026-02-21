@@ -7,14 +7,14 @@
         <!-- Header -->
         <div class="md:flex md:items-center md:justify-between">
             <div class="min-w-0 flex-1">
-                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
-                    🤖 Sugestões Larry (IA)
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                    <span>🤖</span> Sugestões Larry (IA)
                 </h2>
-                <p class="mt-1 text-sm text-gray-500">Sugestões de categorização geradas por inteligência artificial</p>
+                <p class="mt-1 text-sm text-slate-500">Sugestões de categorização geradas por inteligência artificial</p>
             </div>
             <div class="mt-4 flex md:ml-4 md:mt-0">
                 <a href="{% url 'suggestion_generate' %}"
-                   class="inline-flex items-center rounded-md bg-purple-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600">
+                   class="inline-flex items-center rounded-xl bg-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 transition-all duration-200">
                     <svg class="-ml-0.5 mr-1.5 h-5 w-5"
                          viewBox="0 0 20 20"
                          fill="currentColor">
@@ -25,90 +25,92 @@
             </div>
         </div>
         <!-- Info Banner -->
-        <div class="rounded-md bg-purple-50 p-4">
-            <div class="flex">
+        <div class="rounded-2xl bg-purple-50 ring-1 ring-purple-100 p-5">
+            <div class="flex gap-3">
                 <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-purple-400"
+                    <svg class="h-5 w-5 text-purple-500 mt-0.5"
                          viewBox="0 0 20 20"
                          fill="currentColor">
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.75.75 0 00.736-.564c.067-.302.336-.436.627-.436h.015a.75.75 0 01.748.822 2.25 2.25 0 01-1.396 1.866A2.25 2.25 0 019 13.5h-.007a2.25 2.25 0 01-2.247-2.118L6.75 11.25h6.375a.75.75 0 000-1.5H9z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div class="ml-3 flex-1 md:flex md:justify-between">
-                    <p class="text-sm text-purple-700">
-                        Larry é nosso assistente de IA que analisa transações e sugere categorias automaticamente.
-                        Requer Ollama configurado.
-                    </p>
-                </div>
+                <p class="text-sm text-purple-700">
+                    Larry é nosso assistente de IA que analisa transações e sugere categorias automaticamente.
+                    Requer Ollama configurado.
+                </p>
             </div>
         </div>
-        <!-- Suggestions List -->
-        <div class="bg-white shadow sm:rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
+        <!-- Suggestions Table -->
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-900/5 overflow-hidden">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead>
+                    <tr class="bg-slate-50/80">
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="pl-5 pr-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                             Transação
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                             Sugestão Larry
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
                             Valor
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            class="px-3 py-3.5 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">
                             Ações
                         </th>
                     </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="divide-y divide-slate-100">
                     {% for suggestion in suggestions %}
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4">
-                                <div class="text-sm font-medium text-gray-900">{{ suggestion.transaction.memo|truncatechars:40 }}</div>
-                                <div class="text-xs text-gray-500">
-                                    {{ suggestion.transaction.date|date:"d/m/Y" }} - {{ suggestion.transaction.account.name }}
+                        <tr class="hover:bg-slate-50/60 transition-colors">
+                            <td class="pl-5 pr-3 py-4">
+                                <div class="text-sm font-medium text-slate-900">{{ suggestion.transaction.memo|truncatechars:40 }}</div>
+                                <div class="text-xs text-slate-400 mt-0.5">
+                                    {{ suggestion.transaction.date|date:"d/m/Y" }} · {{ suggestion.transaction.account.name }}
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-3 py-4">
                                 {% if suggestion.category %}
-                                    <div class="flex items-center gap-2">
-                                        <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <span class="inline-flex items-center rounded-lg bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200">
                                             {{ suggestion.category.name }}
                                         </span>
-                                        <span class="text-gray-400">→</span>
-                                        <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                                        <svg class="h-3 w-3 text-slate-300"
+                                             fill="currentColor"
+                                             viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="inline-flex items-center rounded-lg bg-sky-50 px-2 py-1 text-xs font-medium text-sky-700 ring-1 ring-inset ring-sky-200">
                                             {{ suggestion.subcategory.name|default:"-" }}
                                         </span>
                                     </div>
                                     {% if suggestion.description %}
-                                        <div class="text-xs text-gray-600 mt-1">
-                                            <strong>Descrição:</strong> {{ suggestion.description }}
+                                        <div class="text-xs text-slate-500 mt-1.5">
+                                            <span class="font-medium">Descrição:</span> {{ suggestion.description }}
                                         </div>
                                     {% endif %}
                                 {% else %}
-                                    <span class="inline-flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                    <span class="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
                                         Sem sugestão de categoria
                                     </span>
                                 {% endif %}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
-                                <div class="text-sm font-medium {% if suggestion.transaction.amount < 0 %}text-red-600{% else %}text-green-600{% endif %}">
+                            <td class="px-3 py-4 whitespace-nowrap text-right">
+                                <span class="text-sm font-semibold {% if suggestion.transaction.amount < 0 %}text-red-600{% else %}text-emerald-600{% endif %}">
                                     R$ {{ suggestion.transaction.amount|intcomma }}
-                                </div>
+                                </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <div class="flex items-center justify-center gap-2">
+                            <td class="px-3 py-4 whitespace-nowrap text-center">
+                                <div class="flex items-center justify-center gap-1.5">
                                     <form method="post"
                                           action="{% url 'suggestion_accept' suggestion.pk %}"
                                           class="inline">
                                         {% csrf_token %}
                                         <button type="submit"
-                                                class="inline-flex items-center rounded-md bg-green-600 px-2 py-1 text-xs font-medium text-white hover:bg-green-500"
+                                                class="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 ring-1 ring-inset ring-emerald-200 transition-all"
                                                 title="Aceitar sugestão e consolidar">
                                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                 <path fill-rule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clip-rule="evenodd" />
@@ -120,7 +122,7 @@
                                           class="inline">
                                         {% csrf_token %}
                                         <button type="submit"
-                                                class="inline-flex items-center rounded-md bg-red-600 px-2 py-1 text-xs font-medium text-white hover:bg-red-500"
+                                                class="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 ring-1 ring-inset ring-red-200 transition-all"
                                                 title="Rejeitar sugestão">
                                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                 <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
@@ -128,7 +130,7 @@
                                         </button>
                                     </form>
                                     <a href="{% url 'transaction_consolidate' suggestion.transaction.pk %}"
-                                       class="inline-flex items-center rounded-md bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-200"
+                                       class="inline-flex items-center justify-center h-8 w-8 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 ring-1 ring-inset ring-indigo-200 transition-all"
                                        title="Editar e consolidar">
                                         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
@@ -140,16 +142,19 @@
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="4" class="px-6 py-8 text-center text-gray-500">
-                                <svg class="mx-auto h-12 w-12 text-gray-300"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
-                                </svg>
-                                <p class="mt-4 text-sm">Nenhuma sugestão pendente.</p>
+                            <td colspan="4" class="px-6 py-14 text-center">
+                                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-50">
+                                    <svg class="h-7 w-7 text-purple-400"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor"
+                                         stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                                    </svg>
+                                </div>
+                                <h3 class="mt-3 text-sm font-semibold text-slate-900">Nenhuma sugestão pendente.</h3>
                                 <a href="{% url 'suggestion_generate' %}"
-                                   class="mt-2 inline-flex items-center text-purple-600 hover:text-purple-500 font-medium">
+                                   class="mt-3 inline-flex items-center text-sm text-purple-600 hover:text-purple-500 font-medium transition-colors">
                                     <svg class="mr-1.5 h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-11.25a.75.75 0 00-1.5 0v2.5h-2.5a.75.75 0 000 1.5h2.5v2.5a.75.75 0 001.5 0v-2.5h2.5a.75.75 0 000-1.5h-2.5v-2.5z" clip-rule="evenodd" />
                                     </svg>
@@ -160,27 +165,22 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <!-- Pagination -->
             {% if is_paginated %}
-                <nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+                <nav class="flex items-center justify-between border-t border-slate-100 bg-white px-5 py-3"
                      aria-label="Pagination">
                     <div class="hidden sm:block">
-                        <p class="text-sm text-gray-700">
-                            Mostrando <span class="font-medium">{{ page_obj.start_index }}</span> a <span class="font-medium">{{ page_obj.end_index }}</span> de <span class="font-medium">{{ paginator.count }}</span>
+                        <p class="text-sm text-slate-500">
+                            Mostrando <span class="font-semibold text-slate-700">{{ page_obj.start_index }}</span> a <span class="font-semibold text-slate-700">{{ page_obj.end_index }}</span> de <span class="font-semibold text-slate-700">{{ paginator.count }}</span>
                         </p>
                     </div>
-                    <div class="flex flex-1 justify-between sm:justify-end">
+                    <div class="flex flex-1 justify-between sm:justify-end gap-2">
                         {% if page_obj.has_previous %}
                             <a href="?page={{ page_obj.previous_page_number }}"
-                               class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">
-                                Anterior
-                            </a>
+                               class="relative inline-flex items-center rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition-all">Anterior</a>
                         {% endif %}
                         {% if page_obj.has_next %}
                             <a href="?page={{ page_obj.next_page_number }}"
-                               class="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">
-                                Próxima
-                            </a>
+                               class="relative inline-flex items-center rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition-all">Próxima</a>
                         {% endif %}
                     </div>
                 </nav>

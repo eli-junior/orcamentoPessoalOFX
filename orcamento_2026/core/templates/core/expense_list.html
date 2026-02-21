@@ -3,22 +3,24 @@
 {% block title %}Despesas - Orçamento 2026{% endblock %}
 
 {% block content %}
-    <div class="space-y-8">
+    <div class="space-y-6">
         <!-- Header -->
         <div class="md:flex md:items-center md:justify-between">
             <div class="min-w-0 flex-1">
-                <h2 class="text-3xl font-bold leading-tight text-gray-900 tracking-tight">Despesas</h2>
-                <p class="mt-2 text-sm text-gray-500">
+                <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Despesas</h2>
+                <p class="mt-1 text-sm text-slate-500">
                     Gerencie suas despesas categorizadas.
-                    <span class="ml-2 inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-800 ring-1 ring-inset ring-emerald-600/20">
+                    <span class="ml-2 inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">
                         Total: R$ {{ total_amount|intcomma }}
                     </span>
                 </p>
             </div>
             <div class="mt-4 flex md:ml-4 md:mt-0">
                 <a href="{% url 'expense_create' %}"
-                   class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-all duration-200">
-                    <svg class="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                   class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 transition-all duration-200">
+                    <svg class="-ml-0.5 mr-1.5 h-5 w-5"
+                         viewBox="0 0 20 20"
+                         fill="currentColor">
                         <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                     </svg>
                     Nova Despesa
@@ -26,14 +28,19 @@
             </div>
         </div>
         <!-- Filters -->
-        <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
-            <div class="px-4 py-4 sm:px-6">
-                 <form method="get" class="flex flex-wrap gap-4 items-end">
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-900/5">
+            <div class="px-5 py-4">
+                <form method="get" class="flex flex-wrap gap-4 items-end">
                     <div class="flex-1 min-w-[200px]">
-                        <label for="search" class="block text-sm font-medium leading-6 text-gray-900">Buscar</label>
-                        <div class="mt-1 relative rounded-md shadow-sm">
+                        <label for="search"
+                               class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                            Buscar
+                        </label>
+                        <div class="relative">
                             <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <svg class="h-4 w-4 text-slate-400"
+                                     viewBox="0 0 20 20"
+                                     fill="currentColor">
                                     <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -41,15 +48,18 @@
                                    name="search"
                                    id="search"
                                    value="{{ request.GET.search }}"
-                                   class="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                   class="block w-full rounded-xl border-0 py-2.5 pl-10 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm bg-white"
                                    placeholder="Descrição...">
                         </div>
                     </div>
                     <div class="min-w-[180px]">
-                        <label for="category" class="block text-sm font-medium leading-6 text-gray-900">Categoria</label>
+                        <label for="category"
+                               class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                            Categoria
+                        </label>
                         <select name="category"
                                 id="category"
-                                class="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                class="block w-full rounded-xl border-0 py-2.5 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm bg-white">
                             <option value="">Todas Categorias</option>
                             {% for cat in categories %}
                                 <option value="{{ cat.id }}"
@@ -60,10 +70,13 @@
                         </select>
                     </div>
                     <div class="min-w-[180px]">
-                         <label for="subcategory" class="block text-sm font-medium leading-6 text-gray-900">Subcategoria</label>
+                        <label for="subcategory"
+                               class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+                            Subcategoria
+                        </label>
                         <select name="subcategory"
                                 id="subcategory"
-                                class="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                class="block w-full rounded-xl border-0 py-2.5 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm bg-white">
                             <option value="">Todas Subcategorias</option>
                             {% for sub in subcategories %}
                                 <option value="{{ sub.id }}"
@@ -73,93 +86,116 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div>
+                    <div class="flex gap-2">
                         <button type="submit"
-                                class="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                class="inline-flex justify-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 transition-all">
                             Filtrar
                         </button>
-                         {% if request.GET.category or request.GET.subcategory or request.GET.search %}
-                        <a href="{% url 'expense_list' %}"
-                           class="ml-2 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                            Limpar
-                        </a>
+                        {% if request.GET.category or request.GET.subcategory or request.GET.search %}
+                            <a href="{% url 'expense_list' %}"
+                               class="rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition-all">
+                                Limpar
+                            </a>
                         {% endif %}
                     </div>
                 </form>
             </div>
         </div>
         <!-- Expenses Table -->
-        <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-300">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Descrição</th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Categoria</th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Mês Ref.</th>
-                        <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Valor</th>
-                        <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Status</th>
-                        <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-slate-900/5 overflow-hidden">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead>
+                    <tr class="bg-slate-50/80">
+                        <th scope="col"
+                            class="py-3.5 pl-5 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            Descrição
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            Categoria
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            Mês Ref.
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            Valor
+                        </th>
+                        <th scope="col"
+                            class="px-3 py-3.5 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                        <th scope="col" class="relative py-3.5 pl-3 pr-5">
                             <span class="sr-only">Ações</span>
                         </th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
+                <tbody class="divide-y divide-slate-100">
                     {% for expense in expenses %}
-                        <tr class="hover:bg-gray-50 transition-colors duration-150 {% if expense.is_ignored %}opacity-60 bg-gray-50{% endif %}">
-                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                                <div class="font-medium text-gray-900">{{ expense.description|truncatechars:40 }}</div>
+                        <tr class="hover:bg-slate-50/60 transition-colors duration-150 {% if expense.is_ignored %}opacity-50{% endif %}">
+                            <td class="whitespace-nowrap py-4 pl-5 pr-3 text-sm">
+                                <div class="font-medium text-slate-900">{{ expense.description|truncatechars:40 }}</div>
                                 {% if expense.transaction %}
-                                    <div class="text-xs text-gray-500 mt-0.5" title="{{ expense.transaction.memo }}">{{ expense.transaction.memo|truncatechars:30 }}</div>
+                                    <div class="text-xs text-slate-400 mt-0.5"
+                                         title="{{ expense.transaction.memo }}">
+                                        {{ expense.transaction.memo|truncatechars:30 }}
+                                    </div>
                                 {% endif %}
                             </td>
-                            <td class="px-3 py-4 text-sm text-gray-500">
-                                <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
+                            <td class="px-3 py-4 text-sm">
+                                <span class="inline-flex items-center rounded-lg bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-200">
                                     {{ expense.subcategory.category.name }}
                                 </span>
-                                <div class="text-xs text-gray-500 mt-1 pl-1">{{ expense.subcategory.name }}</div>
+                                <div class="text-xs text-slate-400 mt-1 pl-0.5">{{ expense.subcategory.name }}</div>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                {{ expense.reference_month|date:"m/Y" }}
-                            </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-medium">
+                            <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{{ expense.reference_month|date:"m/Y" }}</td>
+                            <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-semibold">
                                 {% if expense.transaction %}
                                     <span class="{% if expense.transaction.amount < 0 %}text-red-600{% else %}text-emerald-600{% endif %}">
                                         R$ {{ expense.transaction.amount|intcomma }}
                                     </span>
                                 {% else %}
-                                    <span class="text-gray-400">-</span>
+                                    <span class="text-slate-300">-</span>
                                 {% endif %}
                             </td>
                             <td class="whitespace-nowrap px-3 py-4 text-sm text-center">
                                 {% if expense.is_ignored %}
-                                    <span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                                    <span class="inline-flex items-center rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
                                         Ignorada
                                     </span>
                                 {% else %}
-                                    <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Ativa</span>
+                                    <span class="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">Ativa</span>
                                 {% endif %}
                             </td>
-                            <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6 space-x-3">
+                            <td class="relative whitespace-nowrap py-4 pl-3 pr-5 text-right text-sm font-medium space-x-3">
                                 <a href="{% url 'expense_update' expense.pk %}"
-                                   class="text-indigo-600 hover:text-indigo-900 hover:underline">Editar</a>
+                                   class="text-indigo-600 hover:text-indigo-800 transition-colors">Editar</a>
                                 <button type="button"
                                         @click="$dispatch('confirm-modal', { title: 'Excluir Despesa', message: 'Tem certeza que deseja excluir esta despesa?', action: '{% url 'expense_delete' expense.pk %}' })"
-                                        class="text-red-600 hover:text-red-900 hover:underline">Excluir</button>
+                                        class="text-red-500 hover:text-red-700 transition-colors">Excluir</button>
                             </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-gray-500">
-                                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-50">
-                                    <svg class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <td colspan="6" class="px-6 py-14 text-center">
+                                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+                                    <svg class="h-7 w-7 text-slate-400"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor"
+                                         stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                                <h3 class="mt-2 text-sm font-semibold text-gray-900">Nenhuma despesa encontrada</h3>
-                                <p class="mt-1 text-sm text-gray-500">Registre sua primeira despesa para começar.</p>
-                                <div class="mt-6">
-                                    <a href="{% url 'expense_create' %}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                        <svg class="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <h3 class="mt-3 text-sm font-semibold text-slate-900">Nenhuma despesa encontrada</h3>
+                                <p class="mt-1 text-sm text-slate-500">Registre sua primeira despesa para começar.</p>
+                                <div class="mt-5">
+                                    <a href="{% url 'expense_create' %}"
+                                       class="inline-flex items-center rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 transition-all">
+                                        <svg class="-ml-0.5 mr-1.5 h-5 w-5"
+                                             viewBox="0 0 20 20"
+                                             fill="currentColor">
                                             <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                                         </svg>
                                         Nova Despesa
@@ -172,23 +208,23 @@
             </table>
             <!-- Pagination -->
             {% if is_paginated %}
-                <nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6"
+                <nav class="flex items-center justify-between border-t border-slate-100 bg-white px-5 py-3"
                      aria-label="Pagination">
                     <div class="hidden sm:block">
-                        <p class="text-sm text-gray-700">
-                            Mostrando <span class="font-medium">{{ page_obj.start_index }}</span> a <span class="font-medium">{{ page_obj.end_index }}</span> de <span class="font-medium">{{ paginator.count }}</span>
+                        <p class="text-sm text-slate-500">
+                            Mostrando <span class="font-semibold text-slate-700">{{ page_obj.start_index }}</span> a <span class="font-semibold text-slate-700">{{ page_obj.end_index }}</span> de <span class="font-semibold text-slate-700">{{ paginator.count }}</span>
                         </p>
                     </div>
-                    <div class="flex flex-1 justify-between sm:justify-end">
+                    <div class="flex flex-1 justify-between sm:justify-end gap-2">
                         {% if page_obj.has_previous %}
                             <a href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
-                               class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">
+                               class="relative inline-flex items-center rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition-all">
                                 Anterior
                             </a>
                         {% endif %}
                         {% if page_obj.has_next %}
                             <a href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
-                               class="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">
+                               class="relative inline-flex items-center rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-200 hover:bg-slate-50 transition-all">
                                 Próxima
                             </a>
                         {% endif %}

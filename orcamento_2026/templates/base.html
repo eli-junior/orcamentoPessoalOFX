@@ -1,13 +1,29 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full bg-gray-50">
+<html lang="pt-BR" class="h-full">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>
             {% block title %}Orçamento 2026{% endblock %}
         </title>
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+              rel="stylesheet">
         <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                }
+            }
+        }
+        </script>
         <!-- HTMX -->
         <script src="https://unpkg.com/htmx.org@1.9.12"
                 integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
@@ -15,14 +31,14 @@
         <!-- Alpine.js -->
         <script defer
                 src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-        <!-- Plotly -->
-        <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+        <!-- ApexCharts -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <!-- HTMX Config -->
         <meta name="htmx-config" content='{"useTemplateFragments": true}'>
         <style>
         [x-cloak] { display: none !important; }
 
-        /* Animações HTMX */
+        /* Animations */
         .htmx-added { animation: fadeIn 0.3s ease-in; }
         .htmx-removed { animation: fadeOut 0.3s ease-out; }
 
@@ -36,188 +52,241 @@
             to { opacity: 0; transform: translateY(-10px); }
         }
 
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-16px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
         /* Loading spinner */
         .htmx-request .spinner { display: inline-block !important; }
         .htmx-request.spinner { display: inline-block !important; }
         .spinner { display: none; }
+
+        /* Scrollbar styling */
+        .sidebar-scroll::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .sidebar-scroll::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* Nav link animation */
+        .nav-link { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .nav-link:hover { transform: translateX(4px); }
         </style>
         {% block extra_head %}{% endblock %}
     </head>
-    <body class="h-full" x-data="{ sidebarOpen: false }">
-        <div class="min-h-full">
-            <!-- Navbar -->
-            <nav class="bg-indigo-600">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <a href="{% url 'dashboard' %}" class="text-white text-xl font-bold">💰 Orçamento 2026</a>
-                            </div>
-                            <div class="hidden md:block">
-                                <div class="ml-10 flex items-baseline space-x-4">
-                                    {% if user.is_authenticated %}
-                                        <a href="{% url 'dashboard' %}"
-                                           class="{% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
-                                            Dashboard
-                                        </a>
-                                        <a href="{% url 'transaction_list' %}"
-                                           class="{% if request.resolver_match.url_name == 'transaction_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
-                                            Transações
-                                        </a>
-                                        <a href="{% url 'expense_list' %}"
-                                           class="{% if request.resolver_match.url_name == 'expense_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
-                                            Despesas
-                                        </a>
-                                        <a href="{% url 'category_list' %}"
-                                           class="{% if request.resolver_match.url_name == 'category_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
-                                            Categorias
-                                        </a>
-                                        <a href="{% url 'suggestion_list' %}"
-                                           class="{% if request.resolver_match.url_name == 'suggestion_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium relative">
-                                            Sugestões Larry
-                                            <span id="pending-suggestions-count"
-                                                  hx-get="{% url 'pending_suggestions_count' %}"
-                                                  hx-trigger="load, every 30s"
-                                                  hx-target="this"
-                                                  hx-swap="innerHTML"></span>
-                                        </a>
-                                        <a href="{% url 'import_ofx' %}"
-                                           class="{% if request.resolver_match.url_name == 'import_ofx' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
-                                            Importar
-                                        </a>
-                                    {% endif %}
-                                </div>
-                            </div>
+    <body class="h-full font-sans antialiased" x-data="{ sidebarOpen: false }">
+        <div class="min-h-full flex">
+            {% if user.is_authenticated %}
+                <!-- Mobile sidebar overlay -->
+                <div x-show="sidebarOpen"
+                     x-cloak
+                     x-transition:enter="transition-opacity ease-linear duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="transition-opacity ease-linear duration-300"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     class="fixed inset-0 z-40 bg-slate-900/80 backdrop-blur-sm lg:hidden"
+                     @click="sidebarOpen = false"></div>
+                <!-- Sidebar -->
+                <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+                       class="fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-auto lg:z-auto flex flex-col"
+                       style="background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%)">
+                    <!-- Logo -->
+                    <div class="flex h-20 items-center gap-3 px-6 border-b border-white/5">
+                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20">
+                            <span class="text-lg">💰</span>
                         </div>
-                        <div class="hidden md:block">
-                            <div class="ml-4 flex items-center md:ml-6">
-                                {% if user.is_authenticated %}
-                                    <span class="text-indigo-200 text-sm mr-4">{{ user.username }}</span>
-                                    <form method="post" action="{% url 'logout' %}" class="inline">
-                                        {% csrf_token %}
-                                        <button type="submit"
-                                                class="text-white hover:bg-indigo-500 rounded-md px-3 py-2 text-sm font-medium">
-                                            Sair
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <a href="{% url 'login' %}"
-                                       class="text-white hover:bg-indigo-500 rounded-md px-3 py-2 text-sm font-medium">
-                                        Entrar
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <!-- Mobile menu button -->
-                        <div class="-mr-2 flex md:hidden">
-                            <button type="button"
-                                    @click="sidebarOpen = !sidebarOpen"
-                                    class="inline-flex items-center justify-center rounded-md bg-indigo-600 p-2 text-indigo-200 hover:bg-indigo-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-600">
-                                <span class="sr-only">Abrir menu</span>
-                                <svg class="h-6 w-6"
-                                     fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke-width="1.5"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                                </svg>
-                            </button>
+                        <div>
+                            <h1 class="text-white font-bold text-lg tracking-tight">Orçamento</h1>
+                            <p class="text-slate-400 text-xs font-medium">2026</p>
                         </div>
                     </div>
-                </div>
-                <!-- Mobile menu -->
-                <div x-show="sidebarOpen" x-cloak class="md:hidden">
-                    <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'dashboard' %}"
-                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Dashboard</a>
-                            <a href="{% url 'transaction_list' %}"
-                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Transações</a>
-                            <a href="{% url 'expense_list' %}"
-                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Despesas</a>
-                            <a href="{% url 'category_list' %}"
-                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Categorias</a>
-                            <a href="{% url 'suggestion_list' %}"
-                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Sugestões Larry</a>
-                            <a href="{% url 'import_ofx' %}"
-                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Importar</a>
-                            <div class="border-t border-indigo-700 pt-4 pb-3">
-                                <div class="flex items-center px-5">
-                                    <div class="ml-3">
-                                        <div class="text-base font-medium leading-none text-white">{{ user.username }}</div>
+                    <!-- Navigation -->
+                    <nav class="flex-1 px-4 py-6 space-y-1.5 sidebar-scroll overflow-y-auto">
+                        <p class="px-3 mb-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500">Menu Principal</p>
+                        <a href="{% url 'dashboard' %}"
+                           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium {% if request.resolver_match.url_name == 'dashboard' %} bg-white/10 text-white shadow-sm {% else %} text-slate-300 hover:bg-white/5 hover:text-white {% endif %}">
+                            <svg class="h-5 w-5 {% if request.resolver_match.url_name == 'dashboard' %}text-indigo-400{% else %}text-slate-500{% endif %}"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                            </svg>
+                            Dashboard
+                        </a>
+                        <a href="{% url 'transaction_list' %}"
+                           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium {% if request.resolver_match.url_name == 'transaction_list' %} bg-white/10 text-white shadow-sm {% else %} text-slate-300 hover:bg-white/5 hover:text-white {% endif %}">
+                            <svg class="h-5 w-5 {% if request.resolver_match.url_name == 'transaction_list' %}text-indigo-400{% else %}text-slate-500{% endif %}"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                            </svg>
+                            Transações
+                        </a>
+                        <a href="{% url 'expense_list' %}"
+                           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium {% if request.resolver_match.url_name == 'expense_list' %} bg-white/10 text-white shadow-sm {% else %} text-slate-300 hover:bg-white/5 hover:text-white {% endif %}">
+                            <svg class="h-5 w-5 {% if request.resolver_match.url_name == 'expense_list' %}text-emerald-400{% else %}text-slate-500{% endif %}"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" />
+                            </svg>
+                            Despesas
+                        </a>
+                        <p class="px-3 mt-6 mb-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500">Organização</p>
+                        <a href="{% url 'category_list' %}"
+                           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium {% if request.resolver_match.url_name == 'category_list' %} bg-white/10 text-white shadow-sm {% else %} text-slate-300 hover:bg-white/5 hover:text-white {% endif %}">
+                            <svg class="h-5 w-5 {% if request.resolver_match.url_name == 'category_list' %}text-amber-400{% else %}text-slate-500{% endif %}"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+                            </svg>
+                            Categorias
+                        </a>
+                        <a href="{% url 'suggestion_list' %}"
+                           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium {% if request.resolver_match.url_name == 'suggestion_list' %} bg-white/10 text-white shadow-sm {% else %} text-slate-300 hover:bg-white/5 hover:text-white {% endif %}">
+                            <svg class="h-5 w-5 {% if request.resolver_match.url_name == 'suggestion_list' %}text-purple-400{% else %}text-slate-500{% endif %}"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+                            </svg>
+                            Sugestões Larry
+                            <span id="pending-suggestions-count"
+                                  hx-get="{% url 'pending_suggestions_count' %}"
+                                  hx-trigger="load, every 30s"
+                                  hx-target="this"
+                                  hx-swap="innerHTML"
+                                  class="ml-auto"></span>
+                        </a>
+                        <p class="px-3 mt-6 mb-3 text-[11px] font-semibold uppercase tracking-widest text-slate-500">Ferramentas</p>
+                        <a href="{% url 'import_ofx' %}"
+                           class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium {% if request.resolver_match.url_name == 'import_ofx' %} bg-white/10 text-white shadow-sm {% else %} text-slate-300 hover:bg-white/5 hover:text-white {% endif %}">
+                            <svg class="h-5 w-5 {% if request.resolver_match.url_name == 'import_ofx' %}text-sky-400{% else %}text-slate-500{% endif %}"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                            </svg>
+                            Importar OFX
+                        </a>
+                    </nav>
+                    <!-- User section -->
+                    <div class="border-t border-white/5 px-4 py-4">
+                        <div class="flex items-center gap-3 px-2">
+                            <div class="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 text-white text-sm font-bold shadow-lg">
+                                {{ user.username|make_list|first|upper }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-white truncate">{{ user.username }}</p>
+                            </div>
+                            <form method="post" action="{% url 'logout' %}" class="inline">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all"
+                                        title="Sair">
+                                    <svg class="h-4 w-4"
+                                         fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke-width="1.5"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </aside>
+            {% endif %}
+            <!-- Main content area -->
+            <div class="flex-1 flex flex-col min-h-screen {% if user.is_authenticated %}bg-slate-50{% else %}bg-slate-900{% endif %}">
+                {% if user.is_authenticated %}
+                    <!-- Top bar (mobile) -->
+                    <header class="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-slate-200 bg-white/80 backdrop-blur-xl px-4 lg:hidden">
+                        <button type="button"
+                                @click="sidebarOpen = !sidebarOpen"
+                                class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-all">
+                            <span class="sr-only">Abrir menu</span>
+                            <svg class="h-6 w-6"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke-width="1.5"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">💰</span>
+                            <span class="text-slate-900 font-bold">Orçamento 2026</span>
+                        </div>
+                    </header>
+                {% endif %}
+                <!-- Flash messages -->
+                {% if messages %}
+                    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 pt-4">
+                        {% for message in messages %}
+                            <div class="rounded-xl {% if message.tags == 'success' %}bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200{% elif message.tags == 'error' %}bg-red-50 text-red-800 ring-1 ring-red-200{% else %}bg-sky-50 text-sky-800 ring-1 ring-sky-200{% endif %} p-4 mb-3"
+                                 role="alert"
+                                 style="animation: slideIn 0.3s ease-out">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        {% if message.tags == 'success' %}
+                                            <svg class="h-5 w-5 text-emerald-500"
+                                                 viewBox="0 0 20 20"
+                                                 fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                                            </svg>
+                                        {% elif message.tags == 'error' %}
+                                            <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                                            </svg>
+                                        {% else %}
+                                            <svg class="h-5 w-5 text-sky-500" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 2v3a1 1 0 001 1h1a.75.75 0 000-1.5v-2.5a.75.75 0 00-1-1H9z" clip-rule="evenodd" />
+                                            </svg>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-sm font-medium">{{ message }}</p>
+                                    </div>
+                                    <div class="ml-auto pl-3">
+                                        <button onclick="this.closest('[role=alert]').remove()"
+                                                class="inline-flex rounded-lg p-1 {% if message.tags == 'success' %}text-emerald-400 hover:bg-emerald-100{% elif message.tags == 'error' %}text-red-400 hover:bg-red-100{% else %}text-sky-400 hover:bg-sky-100{% endif %} transition-colors focus:outline-none">
+                                            <span class="sr-only">Fechar</span>
+                                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
-                                <div class="mt-3 space-y-1 px-2">
-                                    <form method="post" action="{% url 'logout' %}">
-                                        {% csrf_token %}
-                                        <button type="submit"
-                                                class="block w-full text-left rounded-md px-3 py-2 text-base font-medium text-white hover:bg-indigo-500 hover:text-white">
-                                            Sair
-                                        </button>
-                                    </form>
-                                </div>
                             </div>
-                        {% else %}
-                            <a href="{% url 'login' %}"
-                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Entrar</a>
-                        {% endif %}
+                        {% endfor %}
                     </div>
-                </div>
-            </nav>
-            <!-- Flash messages -->
-            {% if messages %}
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-4">
-                    {% for message in messages %}
-                        <div class="rounded-md {% if message.tags == 'success' %}bg-green-50 text-green-800{% elif message.tags == 'error' %}bg-red-50 text-red-800{% else %}bg-blue-50 text-blue-800{% endif %} p-4 mb-4"
-                             role="alert">
-                            <div class="flex">
-                                <div class="flex-shrink-0">
-                                    {% if message.tags == 'success' %}
-                                        <svg class="h-5 w-5 text-green-400"
-                                             viewBox="0 0 20 20"
-                                             fill="currentColor">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                        </svg>
-                                    {% elif message.tags == 'error' %}
-                                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                                        </svg>
-                                    {% else %}
-                                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                                        </svg>
-                                    {% endif %}
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-sm font-medium">{{ message }}</p>
-                                </div>
-                                <div class="ml-auto pl-3">
-                                    <button onclick="this.parentElement.parentElement.parentElement.remove()"
-                                            class="inline-flex rounded-md {% if message.tags == 'success' %}bg-green-50 text-green-500 hover:bg-green-100{% elif message.tags == 'error' %}bg-red-50 text-red-500 hover:bg-red-100{% else %}bg-blue-50 text-blue-500 hover:bg-blue-100{% endif %} focus:outline-none">
-                                        <span class="sr-only">Fechar</span>
-                                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <!-- Main content -->
-            <main class="py-6">
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    {% block content %}{% endblock %}
-                </div>
-            </main>
+                {% endif %}
+                <!-- Main content -->
+                <main class="flex-1 py-6 lg:py-8">
+                    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                        {% block content %}{% endblock %}
+                    </div>
+                </main>
+            </div>
         </div>
         <!-- Modal para confirmações -->
         <div x-data="{ show: false, title: '', message: '', action: '' }"
              @confirm-modal.window="show = true; title = $event.detail.title; message = $event.detail.message; action = $event.detail.action"
              x-show="show"
              x-cloak
-             class="relative z-50"
+             class="relative z-[60]"
              aria-labelledby="modal-title"
              role="dialog"
              aria-modal="true">
@@ -228,7 +297,7 @@
                  x-transition:leave="ease-in duration-200"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+                 class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
             <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
                 <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
                     <div x-show="show"
@@ -238,11 +307,11 @@
                          x-transition:leave="ease-in duration-200"
                          x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                          x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                         class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                         class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                         <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                             <div class="sm:flex sm:items-start">
-                                <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                    <svg class="h-6 w-6 text-red-600"
+                                <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-red-50 sm:mx-0 sm:h-10 sm:w-10">
+                                    <svg class="h-6 w-6 text-red-500"
                                          fill="none"
                                          viewBox="0 0 24 24"
                                          stroke-width="1.5"
@@ -251,25 +320,25 @@
                                     </svg>
                                 </div>
                                 <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                                    <h3 class="text-base font-semibold leading-6 text-gray-900"
+                                    <h3 class="text-base font-semibold leading-6 text-slate-900"
                                         x-text="title"></h3>
                                     <div class="mt-2">
-                                        <p class="text-sm text-gray-500" x-text="message"></p>
+                                        <p class="text-sm text-slate-500" x-text="message"></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 gap-3">
                             <form :action="action" method="post" class="inline">
                                 {% csrf_token %}
                                 <button type="submit"
-                                        class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">
+                                        class="inline-flex w-full justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-500 transition-colors sm:w-auto">
                                     Confirmar
                                 </button>
                             </form>
                             <button @click="show = false"
                                     type="button"
-                                    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                                    class="mt-3 inline-flex w-full justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors sm:mt-0 sm:w-auto">
                                 Cancelar
                             </button>
                         </div>
