@@ -22,7 +22,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     # 3rd-party apps
+    "widget_tweaks",
     # Local apps
     "orcamento_2026.core",
 ]
@@ -42,7 +44,7 @@ ROOT_URLCONF = "orcamento_2026.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "orcamento_2026" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -80,9 +82,15 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = config("STATIC_ROOT", default=BASE_DIR / "staticfiles")
+STATICFILES_DIRS = [BASE_DIR / "orcamento_2026" / "static"]
 
 MEDIA_ROOT = config("MEDIA_ROOT", default=BASE_DIR / "media")
 MEDIA_URL = "/media/"
 
 AUTH_USER_MODEL = "core.User"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Auth Redirects
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "login"

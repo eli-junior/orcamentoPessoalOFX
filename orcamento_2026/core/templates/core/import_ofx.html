@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Importar OFX - Orçamento 2026{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <div class="md:flex md:items-center md:justify-between mb-6">
+            <div class="min-w-0 flex-1">
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+                    Importar Arquivo OFX
+                </h2>
+                <p class="mt-1 text-sm text-gray-500">Importe transações de arquivos OFX/QFX do seu banco</p>
+            </div>
+        </div>
+        <div class="bg-white shadow sm:rounded-lg">
+            <form method="post" enctype="multipart/form-data" class="px-4 py-5 sm:p-6">
+                {% csrf_token %}
+                <div class="space-y-6">
+                    <div>
+                        <label for="{{ form.account.id_for_label }}"
+                               class="block text-sm font-medium leading-6 text-gray-900">
+                            {{ form.account.label }}
+                        </label>
+                        <div class="mt-2">{{ form.account }}</div>
+                        {% if form.account.errors %}<p class="mt-2 text-sm text-red-600">{{ form.account.errors.0 }}</p>{% endif %}
+                        <p class="mt-1 text-xs text-gray-500">Selecione a conta bancária correspondente ao arquivo</p>
+                    </div>
+                    <div>
+                        <label for="{{ form.reference_date.id_for_label }}"
+                               class="block text-sm font-medium leading-6 text-gray-900">
+                            {{ form.reference_date.label }}
+                        </label>
+                        <div class="mt-2">{{ form.reference_date }}</div>
+                        {% if form.reference_date.errors %}
+                            <p class="mt-2 text-sm text-red-600">{{ form.reference_date.errors.0 }}</p>
+                        {% endif %}
+                        <p class="mt-1 text-xs text-gray-500">Opcional - útil para faturas de cartão de crédito</p>
+                    </div>
+                    <div>
+                        <label for="{{ form.ofx_file.id_for_label }}"
+                               class="block text-sm font-medium leading-6 text-gray-900">
+                            {{ form.ofx_file.label }}
+                        </label>
+                        <div class="mt-2">{{ form.ofx_file }}</div>
+                        {% if form.ofx_file.errors %}<p class="mt-2 text-sm text-red-600">{{ form.ofx_file.errors.0 }}</p>{% endif %}
+                        <p class="mt-1 text-xs text-gray-500">Arquivos suportados: .ofx, .qfx</p>
+                    </div>
+                </div>
+                <!-- Info Box -->
+                <div class="mt-6 rounded-md bg-blue-50 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.75.75 0 00.736-.564c.067-.302.336-.436.627-.436h.015a.75.75 0 01.748.822 2.25 2.25 0 01-1.396 1.866A2.25 2.25 0 019 13.5h-.007a2.25 2.25 0 01-2.247-2.118L6.75 11.25h6.375a.75.75 0 000-1.5H9z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-blue-800">Como obter o arquivo OFX?</h3>
+                            <div class="mt-2 text-sm text-blue-700">
+                                <ol class="list-decimal pl-5 space-y-1">
+                                    <li>Acesse o internet banking do seu banco</li>
+                                    <li>Vá para a seção de extrato ou fatura</li>
+                                    <li>Selecione o período desejado</li>
+                                    <li>Procure por "Exportar" ou "Download"</li>
+                                    <li>Escolha o formato OFX ou QFX</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex items-center justify-end gap-x-6 pt-6 border-t border-gray-200">
+                    <a href="{% url 'transaction_list' %}"
+                       class="text-sm font-semibold leading-6 text-gray-900">Cancelar</a>
+                    <button type="submit"
+                            class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                        Importar Arquivo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

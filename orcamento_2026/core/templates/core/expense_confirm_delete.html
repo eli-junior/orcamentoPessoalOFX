@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmar Exclusão - Orçamento 2026{% endblock %}
+
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-base font-semibold leading-6 text-gray-900">Confirmar Exclusão</h3>
+                <div class="mt-2 max-w-xl text-sm text-gray-500">
+                    <p>
+                        Tem certeza que deseja excluir a despesa <strong>"{{ object.description }}"</strong>?
+                    </p>
+                    {% if object.transaction %}<p class="mt-2">A transação associada não será excluída.</p>{% endif %}
+                </div>
+                <form method="post" class="mt-5">
+                    {% csrf_token %}
+                    <div class="flex gap-3">
+                        <a href="{% url 'expense_list' %}"
+                           class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                            Cancelar
+                        </a>
+                        <button type="submit"
+                                class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                            Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

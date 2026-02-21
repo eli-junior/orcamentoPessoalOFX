@@ -1,9 +1,8 @@
 # Use ubi10-minimal as the base image
 FROM registry.access.redhat.com/ubi10/ubi-minimal:latest
 
-# Install tzdata
-RUN microdnf install -y tzdata \
-    && microdnf clean all
+RUN microdnf install -y tzdata gcc-c++ python3-devel make && \
+    microdnf clean all
 
 # Copy uv from the official image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
