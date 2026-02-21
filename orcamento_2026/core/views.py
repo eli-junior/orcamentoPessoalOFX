@@ -5,13 +5,12 @@ import logging
 from datetime import date
 from decimal import Decimal
 
-import plotly.graph_objs as go
-import plotly.utils
 from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q, Sum
 from django.db.models.functions import Abs, TruncMonth
 from django.http import HttpResponse
@@ -77,7 +76,7 @@ def dashboard(request):
     unconsolidated_count = get_unconsolidated_transactions().count()
     pending_suggestions = get_pending_suggestions().count()
 
-    # Gráfico 1: Despesas por Categoria (Pie Chart)
+    # Gráfico 1: Despesas por Categoria (Donut)
     expenses_by_category = (
         Expense.objects.filter(
             reference_month__gte=start_date,
@@ -89,24 +88,15 @@ def dashboard(request):
         .order_by("-total")
     )
 
-    pie_data = go.Pie(
-        labels=[item["subcategory__category__name"] for item in expenses_by_category],
-        values=[float(item["total"]) for item in expenses_by_category],
-        hole=0.5,
-        textinfo="label+percent",
-        textposition="outside",
-        automargin=True,
-        marker=dict(colors=["#6366f1", "#8b5cf6", "#ec4899", "#f97316", "#22c55e", "#06b6d4", "#a855f7"]),
+    pie_chart = json.dumps(
+        {
+            "labels": [item["subcategory__category__name"] for item in expenses_by_category],
+            "series": [float(item["total"]) for item in expenses_by_category],
+        },
+        cls=DjangoJSONEncoder,
     )
-    pie_layout = go.Layout(
-        title="Despesas por Categoria",
-        showlegend=False,
-        margin=dict(l=20, r=20, t=40, b=20),
-        height=350,
-    )
-    pie_chart = json.dumps(go.Figure(data=[pie_data], layout=pie_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Gráfico 2: Evolução Mensal (Line Chart)
+    # Gráfico 2: Evolução Mensal (Area)
     monthly_data = (
         Expense.objects.filter(
             reference_month__gte=start_date,
@@ -119,30 +109,15 @@ def dashboard(request):
         .order_by("month")
     )
 
-    line_data = go.Scatter(
-        x=[item["month"].strftime("%b %Y") for item in monthly_data],
-        y=[float(item["total"]) for item in monthly_data],
-        mode="lines+markers+text",
-        text=[f"R$ {float(item['total']):.0f}" for item in monthly_data],
-        textposition="top center",
-        line=dict(color="#6366f1", width=3, shape="spline"),
-        marker=dict(size=8, color="#4338ca", line=dict(width=2, color="white")),
-        fill="tozeroy",
-        fillcolor="rgba(99, 102, 241, 0.1)",
+    line_chart = json.dumps(
+        {
+            "categories": [item["month"].strftime("%b %Y") for item in monthly_data],
+            "series": [float(item["total"]) for item in monthly_data],
+        },
+        cls=DjangoJSONEncoder,
     )
-    line_layout = go.Layout(
-        title="Evolução Mensal",
-        xaxis=dict(showgrid=False),
-        yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)", zeroline=False),
-        showlegend=False,
-        margin=dict(l=40, r=20, t=40, b=20),
-        height=350,
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
-    )
-    line_chart = json.dumps(go.Figure(data=[line_data], layout=line_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Gráfico 3: Top Subcategorias (Bar Chart)
+    # Gráfico 3: Top Subcategorias (Horizontal Bar)
     top_subcategories = (
         Expense.objects.filter(
             reference_month__gte=start_date,
@@ -154,27 +129,15 @@ def dashboard(request):
         .order_by("-total")[:10]
     )
 
-    bar_data = go.Bar(
-        x=[float(item["total"]) for item in top_subcategories],
-        y=[item["subcategory__name"] for item in top_subcategories],
-        orientation="h",
-        marker=dict(color="#6366f1", opacity=0.9),
-        text=[f"R$ {float(item['total']):.0f}" for item in top_subcategories],
-        textposition="auto",
+    bar_chart = json.dumps(
+        {
+            "categories": [item["subcategory__name"] for item in top_subcategories],
+            "series": [float(item["total"]) for item in top_subcategories],
+        },
+        cls=DjangoJSONEncoder,
     )
-    bar_layout = go.Layout(
-        title="Top 10 Subcategorias",
-        xaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)"),
-        yaxis=dict(autorange="reversed", showgrid=False),
-        showlegend=False,
-        margin=dict(l=150, r=20, t=40, b=20),
-        height=400,
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
-    )
-    bar_chart = json.dumps(go.Figure(data=[bar_data], layout=bar_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
-    # Gráfico 4: Comparativo por Conta (Bar Chart)
+    # Gráfico 4: Comparativo por Conta (Vertical Bar)
     expenses_by_account = (
         Expense.objects.filter(
             reference_month__gte=start_date,
@@ -186,24 +149,13 @@ def dashboard(request):
         .order_by("-total")
     )
 
-    account_data = go.Bar(
-        x=[item["transaction__account__name"] for item in expenses_by_account],
-        y=[float(item["total"]) for item in expenses_by_account],
-        marker=dict(color=["#6366f1", "#8b5cf6", "#ec4899", "#f97316"], opacity=0.9),
-        text=[f"R$ {float(item['total']):.0f}" for item in expenses_by_account],
-        textposition="auto",
+    account_chart = json.dumps(
+        {
+            "categories": [item["transaction__account__name"] for item in expenses_by_account],
+            "series": [float(item["total"]) for item in expenses_by_account],
+        },
+        cls=DjangoJSONEncoder,
     )
-    account_layout = go.Layout(
-        title="Despesas por Conta",
-        xaxis=dict(showgrid=False),
-        yaxis=dict(showgrid=True, gridcolor="rgba(0,0,0,0.05)"),
-        showlegend=False,
-        margin=dict(l=40, r=20, t=40, b=20),
-        height=350,
-        plot_bgcolor="rgba(0,0,0,0)",
-        paper_bgcolor="rgba(0,0,0,0)",
-    )
-    account_chart = json.dumps(go.Figure(data=[account_data], layout=account_layout), cls=plotly.utils.PlotlyJSONEncoder)
 
     context = {
         "form": form,
@@ -620,7 +572,7 @@ def pending_suggestions_count(request):
     count = get_pending_suggestions().count()
     if count > 0:
         return HttpResponse(
-            f'<span class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">{count}</span>'
+            f'<span class="inline-flex items-center rounded-lg bg-purple-500/20 px-2 py-0.5 text-[10px] font-bold text-purple-300">{count}</span>'
         )
     return HttpResponse("")
 
