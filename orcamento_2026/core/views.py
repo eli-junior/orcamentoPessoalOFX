@@ -2,25 +2,22 @@
 
 import json
 import logging
-from datetime import date, timedelta
+from datetime import date
 from decimal import Decimal
 
 import plotly.graph_objs as go
 import plotly.utils
+from dateutil.relativedelta import relativedelta
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum
+from django.db.models.functions import Abs, TruncMonth
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DeleteView,
-    ListView,
-    UpdateView,
-)
+from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from orcamento_2026.core.forms import (
     CategoryForm,
@@ -31,23 +28,10 @@ from orcamento_2026.core.forms import (
     OFXImportForm,
     SubCategoryForm,
 )
-from orcamento_2026.core.models import (
-    Account,
-    Category,
-    Expense,
-    SubCategory,
-    Transaction,
-    TransactionSuggestion,
-)
-from orcamento_2026.core.services.consolidation import (
-    consolidate_transaction,
-    get_unconsolidated_transactions,
-)
+from orcamento_2026.core.models import Account, Category, Expense, SubCategory, Transaction, TransactionSuggestion
+from orcamento_2026.core.services.consolidation import consolidate_transaction, get_unconsolidated_transactions
 from orcamento_2026.core.services.import_ofx import import_ofx
-from orcamento_2026.core.services.suggestions import (
-    generate_suggestion_for_transaction,
-    get_pending_suggestions,
-)
+from orcamento_2026.core.services.suggestions import generate_suggestion_for_transaction, get_pending_suggestions
 
 logger = logging.getLogger(__name__)
 
@@ -63,8 +47,10 @@ def dashboard(request):
     form = DashboardFilterForm(request.GET or None)
 
     # Período padrão: últimos 6 meses
-    end_date = date.today()
-    start_date = end_date - timedelta(days=180)
+    reference = date.today()
+
+    start_date = (reference - relativedelta(months=1)).replace(day=21)
+    end_date = (reference + relativedelta(months=1)).replace(day=20)
 
     # Aplicar filtros
     if form.is_valid():
@@ -79,8 +65,6 @@ def dashboard(request):
         reference_month__lte=end_date,
         is_ignored=False,
     ).count()
-
-    from django.db.models.functions import Abs, TruncMonth
 
     total_amount = Expense.objects.filter(
         reference_month__gte=start_date,
@@ -657,8 +641,8 @@ def import_ofx_view(request):
             ofx_file = request.FILES["ofx_file"]
 
             # Salva o arquivo temporariamente
-            import tempfile
             import os
+            import tempfile
 
             with tempfile.NamedTemporaryFile(delete=False, suffix=".ofx") as tmp:
                 for chunk in ofx_file.chunks():
