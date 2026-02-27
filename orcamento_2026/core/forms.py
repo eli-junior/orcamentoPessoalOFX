@@ -1,6 +1,6 @@
 """Formulários do sistema de orçamento."""
 
-from datetime import date
+from datetime import date, datetime
 
 from django import forms
 from django.db import models
@@ -78,6 +78,7 @@ class ExpenseForm(forms.ModelForm):
                 }
             ),
             "reference_month": forms.DateInput(
+                format="%Y-%m",
                 attrs={
                     "type": "month",
                     "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
@@ -86,8 +87,22 @@ class ExpenseForm(forms.ModelForm):
             "is_ignored": forms.CheckboxInput(attrs={"class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"}),
         }
 
+    def clean_reference_month(self):
+        value = self.data.get('reference_month', '')
+        if value and len(value) == 7:  # formato YYYY-MM vindo do input type=month
+            try:
+                # Preserva o dia original ao editar; usa dia 1 para registros novos
+                original_day = 1
+                if self.instance and self.instance.pk and self.instance.reference_month:
+                    original_day = self.instance.reference_month.day
+                return datetime.strptime(value + f'-{original_day:02d}', '%Y-%m-%d').date()
+            except ValueError:
+                pass
+        return self.cleaned_data.get('reference_month')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['reference_month'].input_formats = ['%Y-%m', '%Y-%m-%d']
         # Filtrar transações que não têm despesa associada ou a despesa atual
         if self.instance and self.instance.pk:
             self.fields["transaction"].queryset = Transaction.objects.filter(
@@ -122,6 +137,7 @@ class ExpenseManualForm(forms.ModelForm):
                 }
             ),
             "reference_month": forms.DateInput(
+                format="%Y-%m",
                 attrs={
                     "type": "month",
                     "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
@@ -129,6 +145,23 @@ class ExpenseManualForm(forms.ModelForm):
             ),
             "is_ignored": forms.CheckboxInput(attrs={"class": "h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"}),
         }
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['reference_month'].input_formats = ['%Y-%m', '%Y-%m-%d']
+
+    def clean_reference_month(self):
+        value = self.data.get('reference_month', '')
+        if value and len(value) == 7:  # formato YYYY-MM vindo do input type=month
+            try:
+                original_day = 1
+                if self.instance and self.instance.pk and self.instance.reference_month:
+                    original_day = self.instance.reference_month.day
+                return datetime.strptime(value + f'-{original_day:02d}', '%Y-%m-%d').date()
+            except ValueError:
+                pass
+        return self.cleaned_data.get('reference_month')
 
 
 class OFXImportForm(forms.Form):
@@ -202,13 +235,25 @@ class ConsolidationForm(forms.Form):
     reference_month = forms.DateField(
         initial=date.today,
         label="Mês de Referência",
+        input_formats=['%Y-%m', '%Y-%m-%d'],
         widget=forms.DateInput(
+            format="%Y-%m",
             attrs={
                 "type": "month",
                 "class": "block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6",
             }
         ),
     )
+
+
+    def clean_reference_month(self):
+        value = self.data.get('reference_month', '')
+        if value and len(value) == 7:  # formato YYYY-MM
+            try:
+                return datetime.strptime(value + '-01', '%Y-%m-%d').date()
+            except ValueError:
+                pass
+        return self.cleaned_data.get('reference_month')
 
 
 class DashboardFilterForm(forms.Form):
