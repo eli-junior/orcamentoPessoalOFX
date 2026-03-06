@@ -4,6 +4,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from orcamento_2026.core import views
+from orcamento_2026.core.auth_forms import EmailLoginForm
 
 urlpatterns = [
     # Home
@@ -16,6 +17,7 @@ urlpatterns = [
         auth_views.LoginView.as_view(
             template_name="core/login.html",
             redirect_authenticated_user=True,
+            authentication_form=EmailLoginForm,
         ),
         name="login",
     ),

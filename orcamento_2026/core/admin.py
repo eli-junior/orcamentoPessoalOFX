@@ -5,6 +5,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.translation import gettext_lazy as _
 
 from orcamento_2026.core.models import (
     Account,
@@ -21,10 +23,42 @@ if TYPE_CHECKING:
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    """Admin para o modelo User."""
+class UserAdmin(BaseUserAdmin):
+    """Admin para o modelo User com email como identificador."""
 
-    pass
+    ordering = ("email",)
+    list_display = ("email", "first_name", "last_name", "is_staff")
+    search_fields = ("email", "first_name", "last_name")
+    
+    fieldsets = (
+        (None, {"fields": ("email", "password")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name")}),
+        (
+            _("Permissions"),
+            {
+                "fields": (
+                    "is_active",
+                    "is_staff",
+                    "is_superuser",
+                    "groups",
+                    "user_permissions",
+                ),
+            },
+        ),
+        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+    )
+    
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2"),
+            },
+        ),
+    )
+    
+    readonly_fields = ("last_login", "date_joined")
 
 
 @admin.register(Account)

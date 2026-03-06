@@ -61,6 +61,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "orcamento_2026.wsgi.application"
 
 
+AUTHENTICATION_BACKENDS = [
+    "orcamento_2026.core.auth_backend.EmailBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
