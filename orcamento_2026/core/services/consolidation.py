@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Serviço de consolidação de transações em despesas."""
 
 import logging

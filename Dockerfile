@@ -1,60 +1,78 @@
-# Use ubi10-minimal as the base image
-FROM registry.access.redhat.com/ubi10/ubi-minimal:latest
+# ── Build stage ──────────────────────────────────────────────────────────────
+FROM python:3.12-slim AS builder
 
-RUN microdnf install -y tzdata gcc-c++ python3-devel make && \
-    microdnf clean all
-
-# Copy uv from the official image
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
-
-# Set environment variables
-ENV UV_COMPILE_BYTECODE=1 \
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    UV_PROJECT_ENVIRONMENT="/opt/venv" \
+    PYTHONUNBUFFERED=1 \
+    UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
     UV_NO_DEV=true \
-    UV_PROJECT_ENVIRONMENT="/opt/venv" \
-    UV_CACHE_DIR="/uv_cache" \
-    XDG_DATA_HOME="/uv_data" \
-    PYTHONUNBUFFERED=1 \
-    VIRTUAL_ENV="/opt/venv" \
-    PATH="/opt/venv/bin:$PATH" \
-    start="dev" \
-    HOME="/app" \
-    STATIC_ROOT="/staticfiles" \
-    MEDIA_ROOT="/mediafiles" \
-    TZ="America/Sao_Paulo"
+    UV_PROJECT_ENVIRONMENT="/opt/venv"
 
 WORKDIR /app
 
-# Ensure 1001 can write to workdir and cache/data dirs
-RUN mkdir -p /app /uv_cache /uv_data /opt/venv /staticfiles /mediafiles \
-    && chown -R 1001:1001 /app /uv_cache /uv_data /opt/venv /staticfiles /mediafiles \
-    && echo $TZ > /etc/localtime
+# Dependências de build (somente neste stage)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Switch to user 1001 for all subsequent operations
-USER 1001
+# Copia uv do oficial
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Install Python and dependencies
-# Copy only files needed for installation first
-COPY --chown=1001:1001 pyproject.toml uv.lock ./
-COPY --chown=1001:1001 entrypoint.sh /usr/local/bin/entrypoint.sh
-
-# Ensure entrypoint is executable
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-# Install dependencies
+# Instala dependências via uv (layer cacheável)
+COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-install-project
 
-# Copy the rest of the application
-COPY --chown=1001:1001 . .
-
-# Install the project itself
+# Copia o projeto e instala
+COPY . .
 RUN uv sync --frozen
 
-# Expose port
+# ── Runtime stage ─────────────────────────────────────────────────────────────
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    UV_PROJECT_ENVIRONMENT="/opt/venv" \
+    PYTHONUNBUFFERED=1 \
+    TZ=America/Sao_Paulo \
+    VIRTUAL_ENV="/opt/venv" \
+    PATH="/opt/venv/bin:$PATH" \
+    HOME="/app" \
+    STATIC_ROOT="/staticfiles" \
+    MEDIA_ROOT="/mediafiles"
+
+# Runtime libs apenas
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq5 \
+    curl \
+    tzdata \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone \
+    && rm -rf /var/lib/apt/lists/*
+
+# Cria diretórios e usuário não-root
+RUN mkdir -p /app /staticfiles /mediafiles \
+    && useradd -m -u 1001 appuser \
+    && chown -R appuser:appuser /app /staticfiles /mediafiles
+
+# Copia venv do builder
+COPY --from=builder --chown=appuser:appuser /opt/venv /opt/venv
+# Copia uv para o runtime (entrypoint.sh usa uv run)
+COPY --from=builder /bin/uv /usr/local/bin/uv
+
+WORKDIR /app
+
+# Copia código (sem venv)
+COPY --chown=appuser:appuser . .
+COPY --chown=appuser:appuser entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Cria diretório static para evitar warning do Django
+RUN mkdir -p /app/orcamento_2026/static
+
+USER appuser
+
 EXPOSE 8000
 
-# Set entrypoint
 ENTRYPOINT ["entrypoint.sh"]
-
-# Default command
-CMD ["development"]
+CMD ["production"]

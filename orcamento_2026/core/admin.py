@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Configuração do Django Admin."""
 
 from typing import TYPE_CHECKING

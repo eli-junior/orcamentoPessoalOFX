@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Modelos do core do Orçamento 2026."""
 
 from datetime import date

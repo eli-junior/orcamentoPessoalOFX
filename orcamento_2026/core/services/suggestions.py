@@ -1,14 +1,16 @@
 """Serviço de sugestões de IA para categorização de transações."""
 
+import difflib
 import json
 import logging
+import threading
 
 import requests
 from decouple import config
 from django.db.models import Q
 
+from orcamento_2026.core.models import Expense, Transaction, TransactionSuggestion
 from orcamento_2026.core.services.utils.db_utils import case_insensitive_get
-from orcamento_2026.core.models import Transaction, TransactionSuggestion, Expense
 
 logger = logging.getLogger(__name__)
 
@@ -18,33 +20,50 @@ OLLAMA_MODEL: str = config("OLLAMA_MODEL", default="qwen2.5:1.5b")
 
 def get_pending_suggestions() -> TransactionSuggestion:
     """Retorna sugestões pendentes de revisão."""
-    return TransactionSuggestion.objects.filter(status="PENDENTE").select_related("transaction", "category", "subcategory")
+    return TransactionSuggestion.objects.filter(status="PENDENTE").select_related(
+        "transaction", "category", "subcategory"
+    )
 
 
-def find_similar_expenses(description: str, limit: int = 3) -> list[Expense]:
+def find_similar_expenses(description: str, limit: int = 5) -> list[Expense]:
     """
-    Encontra despesas passadas com descrições similares.
-
-    Usa um filtro simples por conter parte da string.
+    Encontra despesas passadas com descrições similares usando SequenceMatcher.
+    Mais inteligente que busca por palavras simples.
 
     Args:
         description: Descrição para buscar similares
         limit: Número máximo de resultados
 
     Returns:
-        Lista de despesas similares
+        Lista de despesas similares ranqueadas por similaridade
     """
-    # Simplificação: pega as primeiras 2 palavras
-    parts = description.split()[:2]
-    query = Q()
-    for part in parts:
-        if len(part) > 2:
-            query |= Q(transaction__memo__icontains=part)
-
-    if not query:
+    # Busca candidatos com filtro inicial por palavras-chave
+    parts = [p for p in description.split() if len(p) > 3]
+    if not parts:
         return []
 
-    return list(Expense.objects.filter(query).select_related("subcategory", "subcategory__category").order_by("-reference_month")[:limit])
+    query = Q()
+    for part in parts[:3]:
+        query |= Q(transaction__memo__icontains=part) | Q(description__icontains=part)
+
+    candidates = list(
+        Expense.objects.filter(query)
+        .select_related("subcategory", "subcategory__category")
+        .order_by("-reference_month")[:50]
+    )
+
+    # Ranqueia por similaridade com SequenceMatcher
+    def similarity_score(expense: Expense) -> float:
+        memo_sim = difflib.SequenceMatcher(
+            None, description.lower(), expense.transaction.memo.lower()
+        ).ratio()
+        desc_sim = difflib.SequenceMatcher(
+            None, description.lower(), (expense.description or "").lower()
+        ).ratio()
+        return max(memo_sim, desc_sim)
+
+    ranked = sorted(candidates, key=similarity_score, reverse=True)
+    return ranked[:limit]
 
 
 def _build_prompt(
@@ -88,8 +107,11 @@ def _build_prompt(
     {{
         "category": "Nome da Categoria",
         "subcategory": "Nome da Subcategoria",
-        "description": "Descrição sugerida (ex: 'Almoço no Restaurante X')"
+        "description": "Descrição normalizada (sem CNPJs, códigos, números de loja)",
+        "confidence": 0.9
     }}
+
+    O campo "confidence" deve ser um float entre 0.0 e 1.0 indicando sua confiança na sugestão.
     """
 
 
@@ -160,3 +182,25 @@ def generate_suggestion_for_transaction(
 
     logger.info(f"Sugestão gerada para transação {transaction.id}")
     return suggestion
+
+
+def generate_suggestions_async(transaction_ids: list[int]) -> None:
+    """
+    Processa sugestões em background thread para não bloquear o request.
+    Seguro para uso pessoal (app single-user).
+    """
+
+    def _worker():
+        for tx_id in transaction_ids:
+            try:
+                tx = Transaction.objects.get(id=tx_id)
+                generate_suggestion_for_transaction(tx)
+                logger.info(f"Sugestão gerada async para transação {tx_id}")
+            except Transaction.DoesNotExist:
+                logger.warning(f"Transação {tx_id} não encontrada")
+            except Exception as e:
+                logger.error(f"Erro ao gerar sugestão async para {tx_id}: {e}")
+
+    thread = threading.Thread(target=_worker, daemon=True)
+    thread.start()
+    logger.info(f"Thread de sugestões iniciada para {len(transaction_ids)} transação(ões)")

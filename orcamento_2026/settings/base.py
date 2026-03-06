@@ -100,3 +100,6 @@ LOGOUT_REDIRECT_URL = "login"
 # CORS — libera acesso da rede local
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+# Ambiente de execução
+ENVIRONMENT = config("ENVIRONMENT", default="development")

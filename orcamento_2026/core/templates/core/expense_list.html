@@ -41,7 +41,7 @@
                                    name="search"
                                    id="search"
                                    value="{{ request.GET.search }}"
-                                   class="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                   class="block w-full rounded-md border-0 py-2.5 px-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                    placeholder="Descrição...">
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                         <label for="category" class="block text-sm font-medium leading-6 text-gray-900">Categoria</label>
                         <select name="category"
                                 id="category"
-                                class="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                class="mt-1 block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             <option value="">Todas Categorias</option>
                             {% for cat in categories %}
                                 <option value="{{ cat.id }}"
@@ -63,7 +63,7 @@
                          <label for="subcategory" class="block text-sm font-medium leading-6 text-gray-900">Subcategoria</label>
                         <select name="subcategory"
                                 id="subcategory"
-                                class="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                class="mt-1 block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             <option value="">Todas Subcategorias</option>
                             {% for sub in subcategories %}
                                 <option value="{{ sub.id }}"
