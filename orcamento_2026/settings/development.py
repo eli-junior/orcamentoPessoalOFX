@@ -18,9 +18,9 @@ MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa: F405
 default_dburl = f"sqlite:///{Path.joinpath(DIR, '../db.sqlite3').resolve()}"
 DATABASES = {"default": config("DATABASE_URL", default=default_dburl, cast=dburl)}
 
-TEMPLATES[0]["OPTIONS"]["context_processors"].insert(
+TEMPLATES[0]["OPTIONS"]["context_processors"].insert(  # noqa: F405
     0, "django.template.context_processors.debug"
-)  # noqa: F405
+)
 
 # For Django Debug Toolbar
 INTERNAL_IPS = ["127.0.0.1"]
