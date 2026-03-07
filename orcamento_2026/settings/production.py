@@ -7,7 +7,7 @@ DEBUG = False
 
 DATABASES = {"default": config("DATABASE_URL", cast=dburl)}
 
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')  # noqa: F405
 
 
 STORAGES = {

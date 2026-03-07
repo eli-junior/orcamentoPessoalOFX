@@ -71,38 +71,50 @@ class Command(BaseCommand):
                 self.stdout.write("\nNenhuma conta encontrada. Vamos criar uma.")
                 account = self.create_account()
 
-            # 3. Selecionar Data de Referência
-            self.stdout.write("\nSelecione a Data de Referência (Competência):")
-            period_options = get_period_options()
-            for i, (date_val, label) in enumerate(period_options, 1):
-                self.stdout.write(f"{i}. {label}")
+            # 3. Selecionar Data de Referência (apenas para cartões de crédito)
+            use_transaction_date_as_reference = False
+            reference_date = None
 
-            try:
-                # Default para opção 2 (Mês Corrente - índice 1 do array, mas opção 2 no input)
-                date_choice_input = input(f"Escolha a opção (Padrão 2 - {period_options[1][1]}): ")
-                if not date_choice_input:
-                    date_choice = 2
-                else:
-                    date_choice = int(date_choice_input)
+            if account.type == "K":  # Cartão de Crédito
+                self.stdout.write("\nSelecione a Data de Referência (Competência):")
+                period_options = get_period_options()
+                for i, (date_val, label) in enumerate(period_options, 1):
+                    self.stdout.write(f"{i}. {label}")
 
-                if 1 <= date_choice <= len(period_options):
-                    reference_date = period_options[date_choice - 1][0]
-                else:
-                    self.stdout.write(self.style.ERROR("Opção inválida. Usando mês corrente."))
+                try:
+                    # Default para opção 2 (Mês Corrente - índice 1 do array, mas opção 2 no input)
+                    date_choice_input = input(f"Escolha a opção (Padrão 2 - {period_options[1][1]}): ")
+                    if not date_choice_input:
+                        date_choice = 2
+                    else:
+                        date_choice = int(date_choice_input)
+
+                    if 1 <= date_choice <= len(period_options):
+                        reference_date = period_options[date_choice - 1][0]
+                    else:
+                        self.stdout.write(self.style.ERROR("Opção inválida. Usando mês corrente."))
+                        reference_date = period_options[1][0]
+                except ValueError:
+                    self.stdout.write(self.style.ERROR("Entrada inválida. Usando mês corrente."))
                     reference_date = period_options[1][0]
-            except ValueError:
-                self.stdout.write(self.style.ERROR("Entrada inválida. Usando mês corrente."))
-                reference_date = period_options[1][0]
+
+                self.stdout.write(f"\nImportando '{selected_file}' para conta '{account.name}' com referência {reference_date}...")
+            else:  # Conta Corrente
+                use_transaction_date_as_reference = True
+                self.stdout.write(f"\nImportando '{selected_file}' para conta '{account.name}' (data de referência = data do lançamento)...")
 
             # 4. Executar importação
-            self.stdout.write(f"\nImportando '{selected_file}' para conta '{account.name}' com referência {reference_date}...")
-
             try:
-                result = import_ofx(file_path, account, reference_date)
+                result = import_ofx(file_path, account, reference_date, use_transaction_date_as_reference)
                 new_tx_count = result["transactions_created"]
                 self.stdout.write(self.style.SUCCESS(f"Sucesso! {new_tx_count} transações novas."))
 
-                new_filename = f"{reference_date.strftime('%Y%m%d')}_{selected_file}"
+                # Define o novo nome do arquivo
+                if reference_date:
+                    new_filename = f"{reference_date.strftime('%Y%m%d')}_{selected_file}"
+                else:
+                    from datetime import datetime
+                    new_filename = f"{datetime.now().strftime('%Y%m%d')}_{selected_file}"
                 shutil.move(file_path, os.path.join(path_procesados, new_filename))
 
                 # 5. Perguntar se deseja gerar sugestões agora

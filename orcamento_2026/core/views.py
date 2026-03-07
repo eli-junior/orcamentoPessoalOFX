@@ -32,7 +32,6 @@ from orcamento_2026.core.models import Account, Category, Expense, SubCategory, 
 from orcamento_2026.core.services.consolidation import consolidate_transaction, get_unconsolidated_transactions
 from orcamento_2026.core.services.import_ofx import import_ofx
 from orcamento_2026.core.services.suggestions import (
-    generate_suggestion_for_transaction,
     generate_suggestions_async,
     get_pending_suggestions,
 )

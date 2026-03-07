@@ -1,0 +1,104 @@
+# Starship configuration - Prompt moderno e informativo
+
+format = """
+[](#3B4252)$python$username$hostname[](fg:#3B4252 bg:#434C5E)[](fg:#434C5E bg:#4C566A)$directory[](fg:#4C566A bg:#88C0D0)$git_branch$git_status[](fg:#88C0D0 bg:#A3BE8C)$cmd_duration[](fg:#A3BE8C bg:#1b1b1b)
+$character"""
+
+# Desabilita a linha em branco entre comandos
+add_newline = true
+
+[character]
+success_symbol = "[❯](bold #A3BE8C)"
+error_symbol = "[❯](bold #BF616A)"
+
+[username]
+style_user = "bg:#3B4252 fg:#D8DEE9"
+style_root = "bg:#3B4252 fg:#BF616A"
+format = "[ $user ]($style)"
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = false
+style = "bg:#434C5E fg:#D8DEE9"
+format = "[ $hostname ]($style)"
+
+[directory]
+style = "bg:#4C566A fg:#ECEFF4"
+format = "[ $path ]($style)[$read_only]($read_only_style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[git_branch]
+symbol = "שׂ"
+style = "bg:#88C0D0 fg:#2E3440"
+format = "[ $symbol $branch ]($style)"
+
+[git_status]
+style = "bg:#88C0D0 fg:#2E3440"
+format = "[$all_status$ahead_behind ]($style)"
+conflicted = "🏳"
+ahead = "🏎💨"
+behind = "😰"
+diverged = "😵"
+up_to_date = "✓"
+truncation_symbol = "🚧"
+stashed = "📦"
+modified = "📝"
+staged = '[++\($count\)](green)'
+renamed = "👅"
+deleted = "🗑"
+untracked = "🤷"
+
+[cmd_duration]
+min_time = 500
+style = "bg:#A3BE8C fg:#2E3440"
+format = "[ ⏱ $duration ]($style)"
+
+[python]
+symbol = "🐍"
+style = "bg:#3B4252 fg:#A3BE8C"
+format = "[ $symbol $pyenv_prefix$version ]($style)"
+pyenv_version_name = true
+
+[time]
+disabled = true
+
+[package]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[ruby]
+disabled = true
+
+[rust]
+disabled = true
+
+[golang]
+disabled = true
+
+[php]
+disabled = true
+
+[java]
+disabled = true
+
+[kotlin]
+disabled = true
+
+[haskell]
+disabled = true
+
+[elixir]
+disabled = true
+
+[swift]
+disabled = true
+
+[crystal]
+disabled = true
+
+[docker_context]
+disabled = true

@@ -1,8 +1,8 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from orcamento_2026.core.models import Account, Transaction, Category, SubCategory, Expense, TransactionSuggestion
-from datetime import date, timedelta
+from datetime import date
 
 User = get_user_model()
 
