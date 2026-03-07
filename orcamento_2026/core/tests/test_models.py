@@ -2,7 +2,13 @@ from datetime import date
 from decimal import Decimal
 import pytest
 from django.db import IntegrityError
-from orcamento_2026.core.models import Account, Category, SubCategory, Transaction, Expense
+from orcamento_2026.core.models import (
+    Account,
+    Category,
+    SubCategory,
+    Transaction,
+    Expense,
+)
 
 
 @pytest.mark.django_db
@@ -42,7 +48,11 @@ class TestTransactionModel:
     def test_create_transaction(self):
         account = Account.objects.create(name="Itaú", type="C")
         transaction = Transaction.objects.create(
-            fitid="12345", account=account, amount=Decimal("100.50"), date=date(2026, 2, 15), memo="Supermercado"
+            fitid="12345",
+            account=account,
+            amount=Decimal("100.50"),
+            date=date(2026, 2, 15),
+            memo="Supermercado",
         )
         assert transaction.fitid == "12345"
         assert transaction.amount == Decimal("100.50")
@@ -50,9 +60,21 @@ class TestTransactionModel:
 
     def test_transaction_unique_fitid(self):
         account = Account.objects.create(name="Itaú", type="C")
-        Transaction.objects.create(fitid="unique-id", account=account, amount=Decimal("10.00"), date=date(2026, 2, 15), memo="Teste 1")
+        Transaction.objects.create(
+            fitid="unique-id",
+            account=account,
+            amount=Decimal("10.00"),
+            date=date(2026, 2, 15),
+            memo="Teste 1",
+        )
         with pytest.raises(IntegrityError):
-            Transaction.objects.create(fitid="unique-id", account=account, amount=Decimal("20.00"), date=date(2026, 2, 16), memo="Teste 2")
+            Transaction.objects.create(
+                fitid="unique-id",
+                account=account,
+                amount=Decimal("20.00"),
+                date=date(2026, 2, 16),
+                memo="Teste 2",
+            )
 
 
 @pytest.mark.django_db
@@ -63,11 +85,18 @@ class TestExpenseModel:
         subcategory = SubCategory.objects.create(category=category, name="Farmácia")
 
         transaction = Transaction.objects.create(
-            fitid="exp-1", account=account, amount=Decimal("-50.00"), date=date(2026, 2, 10), memo="Remédio"
+            fitid="exp-1",
+            account=account,
+            amount=Decimal("-50.00"),
+            date=date(2026, 2, 10),
+            memo="Remédio",
         )
 
         expense = Expense.objects.create(
-            transaction=transaction, description="Remédio Dor de Cabeça", subcategory=subcategory, reference_month=date(2026, 2, 1)
+            transaction=transaction,
+            description="Remédio Dor de Cabeça",
+            subcategory=subcategory,
+            reference_month=date(2026, 2, 1),
         )
 
         assert expense.transaction == transaction

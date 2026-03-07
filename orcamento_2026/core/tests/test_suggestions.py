@@ -32,19 +32,49 @@ class TestGetPendingSuggestions:
         category = Category.objects.create(name="TestCat")
         subcategory = SubCategory.objects.create(category=category, name="TestSub")
 
-        tx1 = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test 1")
-        tx2 = Transaction.objects.create(fitid="tx2", account=account, amount=Decimal("200.00"), date=date(2026, 2, 16), memo="Test 2")
-        tx3 = Transaction.objects.create(fitid="tx3", account=account, amount=Decimal("300.00"), date=date(2026, 2, 17), memo="Test 3")
+        tx1 = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test 1",
+        )
+        tx2 = Transaction.objects.create(
+            fitid="tx2",
+            account=account,
+            amount=Decimal("200.00"),
+            date=date(2026, 2, 16),
+            memo="Test 2",
+        )
+        tx3 = Transaction.objects.create(
+            fitid="tx3",
+            account=account,
+            amount=Decimal("300.00"),
+            date=date(2026, 2, 17),
+            memo="Test 3",
+        )
 
         # Cria sugestões com diferentes status
         sugg_pending = TransactionSuggestion.objects.create(
-            transaction=tx1, category=category, subcategory=subcategory, description="Pending", status="PENDENTE"
+            transaction=tx1,
+            category=category,
+            subcategory=subcategory,
+            description="Pending",
+            status="PENDENTE",
         )
         TransactionSuggestion.objects.create(
-            transaction=tx2, category=category, subcategory=subcategory, description="Aceito", status="ACEITO"
+            transaction=tx2,
+            category=category,
+            subcategory=subcategory,
+            description="Aceito",
+            status="ACEITO",
         )
         TransactionSuggestion.objects.create(
-            transaction=tx3, category=category, subcategory=subcategory, description="Rejeitado", status="REJEITADO"
+            transaction=tx3,
+            category=category,
+            subcategory=subcategory,
+            description="Rejeitado",
+            status="REJEITADO",
         )
 
         pending = get_pending_suggestions()
@@ -58,9 +88,19 @@ class TestGetPendingSuggestions:
         category = Category.objects.create(name="TestCat")
         subcategory = SubCategory.objects.create(category=category, name="TestSub")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test 1")
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test 1",
+        )
         TransactionSuggestion.objects.create(
-            transaction=tx, category=category, subcategory=subcategory, description="Aceito", status="ACEITO"
+            transaction=tx,
+            category=category,
+            subcategory=subcategory,
+            description="Aceito",
+            status="ACEITO",
         )
 
         pending = get_pending_suggestions()
@@ -79,16 +119,45 @@ class TestFindSimilarExpenses:
 
         # Cria transações/despesas
         tx1 = Transaction.objects.create(
-            fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 1, 15), memo="Supermercado Extra"
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 1, 15),
+            memo="Supermercado Extra",
         )
         tx2 = Transaction.objects.create(
-            fitid="tx2", account=account, amount=Decimal("200.00"), date=date(2026, 2, 10), memo="Supermercado Carrefour"
+            fitid="tx2",
+            account=account,
+            amount=Decimal("200.00"),
+            date=date(2026, 2, 10),
+            memo="Supermercado Carrefour",
         )
-        tx3 = Transaction.objects.create(fitid="tx3", account=account, amount=Decimal("50.00"), date=date(2026, 2, 5), memo="Uber")
+        tx3 = Transaction.objects.create(
+            fitid="tx3",
+            account=account,
+            amount=Decimal("50.00"),
+            date=date(2026, 2, 5),
+            memo="Uber",
+        )
 
-        Expense.objects.create(transaction=tx1, description="Compras", subcategory=subcategory, reference_month=date(2026, 1, 1))
-        Expense.objects.create(transaction=tx2, description="Compras", subcategory=subcategory, reference_month=date(2026, 2, 1))
-        Expense.objects.create(transaction=tx3, description="Transporte", subcategory=subcategory, reference_month=date(2026, 2, 1))
+        Expense.objects.create(
+            transaction=tx1,
+            description="Compras",
+            subcategory=subcategory,
+            reference_month=date(2026, 1, 1),
+        )
+        Expense.objects.create(
+            transaction=tx2,
+            description="Compras",
+            subcategory=subcategory,
+            reference_month=date(2026, 2, 1),
+        )
+        Expense.objects.create(
+            transaction=tx3,
+            description="Transporte",
+            subcategory=subcategory,
+            reference_month=date(2026, 2, 1),
+        )
 
         # Busca por "Supermercado"
         similar = find_similar_expenses("Supermercado Pão de Açúcar")
@@ -103,8 +172,19 @@ class TestFindSimilarExpenses:
         category = Category.objects.create(name="TestCat")
         subcategory = SubCategory.objects.create(category=category, name="TestSub")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 1, 15), memo="Supermercado")
-        Expense.objects.create(transaction=tx, description="Compras", subcategory=subcategory, reference_month=date(2026, 1, 1))
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 1, 15),
+            memo="Supermercado",
+        )
+        Expense.objects.create(
+            transaction=tx,
+            description="Compras",
+            subcategory=subcategory,
+            reference_month=date(2026, 1, 1),
+        )
 
         similar = find_similar_expenses("Uber Transporte")
         assert len(similar) == 0
@@ -118,9 +198,18 @@ class TestFindSimilarExpenses:
         # Cria várias despesas similares
         for i in range(5):
             tx = Transaction.objects.create(
-                fitid=f"tx{i}", account=account, amount=Decimal("100.00"), date=date(2026, 1, 15), memo=f"Supermercado {i}"
+                fitid=f"tx{i}",
+                account=account,
+                amount=Decimal("100.00"),
+                date=date(2026, 1, 15),
+                memo=f"Supermercado {i}",
             )
-            Expense.objects.create(transaction=tx, description="Compras", subcategory=subcategory, reference_month=date(2026, 1, 1))
+            Expense.objects.create(
+                transaction=tx,
+                description="Compras",
+                subcategory=subcategory,
+                reference_month=date(2026, 1, 1),
+            )
 
         similar = find_similar_expenses("Supermercado Novo", limit=2)
         assert len(similar) == 2
@@ -131,8 +220,19 @@ class TestFindSimilarExpenses:
         category = Category.objects.create(name="TestCat")
         subcategory = SubCategory.objects.create(category=category, name="TestSub")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 1, 15), memo="Supermercado")
-        Expense.objects.create(transaction=tx, description="Compras", subcategory=subcategory, reference_month=date(2026, 1, 1))
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 1, 15),
+            memo="Supermercado",
+        )
+        Expense.objects.create(
+            transaction=tx,
+            description="Compras",
+            subcategory=subcategory,
+            reference_month=date(2026, 1, 1),
+        )
 
         # Descrição apenas com palavras curtas (<= 2 caracteres) - deve retornar vazio
         # A função considera apenas as 2 primeiras palavras
@@ -154,9 +254,19 @@ class TestGenerateSuggestionForTransaction:
         category = Category.objects.create(name="TestCat")
         subcategory = SubCategory.objects.create(category=category, name="TestSub")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test")
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test",
+        )
         existing = TransactionSuggestion.objects.create(
-            transaction=tx, category=category, subcategory=subcategory, description="Existing", status="PENDENTE"
+            transaction=tx,
+            category=category,
+            subcategory=subcategory,
+            description="Existing",
+            status="PENDENTE",
         )
 
         result = generate_suggestion_for_transaction(tx)
@@ -172,14 +282,24 @@ class TestGenerateSuggestionForTransaction:
         subcategory = SubCategory.objects.create(category=category, name="Supermercado")
 
         tx = Transaction.objects.create(
-            fitid="tx1", account=account, amount=Decimal("-150.00"), date=date(2026, 2, 15), memo="Supermercado Extra"
+            fitid="tx1",
+            account=account,
+            amount=Decimal("-150.00"),
+            date=date(2026, 2, 15),
+            memo="Supermercado Extra",
         )
 
         # Mock da resposta do Ollama
         mock_response = MagicMock()
         mock_response.raise_for_status.return_value = None
         mock_response.json.return_value = {
-            "response": json.dumps({"category": "Alimentação", "subcategory": "Supermercado", "description": "Compras no Extra"})
+            "response": json.dumps(
+                {
+                    "category": "Alimentação",
+                    "subcategory": "Supermercado",
+                    "description": "Compras no Extra",
+                }
+            )
         }
         mock_post.return_value = mock_response
 
@@ -199,13 +319,25 @@ class TestGenerateSuggestionForTransaction:
         category = Category.objects.create(name="Alimentação")
         subcategory = SubCategory.objects.create(category=category, name="Supermercado")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("-150.00"), date=date(2026, 2, 15), memo="Test")
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("-150.00"),
+            date=date(2026, 2, 15),
+            memo="Test",
+        )
 
         # Mock com nomes em maiúsculo
         mock_response = MagicMock()
         mock_response.raise_for_status.return_value = None
         mock_response.json.return_value = {
-            "response": json.dumps({"category": "ALIMENTAÇÃO", "subcategory": "SUPERMERCADO", "description": "Compras"})
+            "response": json.dumps(
+                {
+                    "category": "ALIMENTAÇÃO",
+                    "subcategory": "SUPERMERCADO",
+                    "description": "Compras",
+                }
+            )
         }
         mock_post.return_value = mock_response
 
@@ -219,7 +351,13 @@ class TestGenerateSuggestionForTransaction:
         """Testa tratamento de erro da API."""
         account = Account.objects.create(name="Test", type="C")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("-150.00"), date=date(2026, 2, 15), memo="Test")
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("-150.00"),
+            date=date(2026, 2, 15),
+            memo="Test",
+        )
 
         mock_post.side_effect = Exception("Connection error")
 
@@ -232,7 +370,13 @@ class TestGenerateSuggestionForTransaction:
         """Testa tratamento de JSON inválido na resposta."""
         account = Account.objects.create(name="Test", type="C")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("-150.00"), date=date(2026, 2, 15), memo="Test")
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("-150.00"),
+            date=date(2026, 2, 15),
+            memo="Test",
+        )
 
         mock_response = MagicMock()
         mock_response.raise_for_status.return_value = None
@@ -248,13 +392,23 @@ class TestGenerateSuggestionForTransaction:
         """Testa criação de sugestão quando categoria não é encontrada."""
         account = Account.objects.create(name="Test", type="C")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("-150.00"), date=date(2026, 2, 15), memo="Test")
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("-150.00"),
+            date=date(2026, 2, 15),
+            memo="Test",
+        )
 
         mock_response = MagicMock()
         mock_response.raise_for_status.return_value = None
         mock_response.json.return_value = {
             "response": json.dumps(
-                {"category": "Categoria Inexistente", "subcategory": "Subcategoria Inexistente", "description": "Descrição"}
+                {
+                    "category": "Categoria Inexistente",
+                    "subcategory": "Subcategoria Inexistente",
+                    "description": "Descrição",
+                }
             )
         }
         mock_post.return_value = mock_response
@@ -275,20 +429,37 @@ class TestGenerateSuggestionForTransaction:
 
         # Cria despesa similar
         tx_similar = Transaction.objects.create(
-            fitid="tx_similar", account=account, amount=Decimal("-100.00"), date=date(2026, 1, 15), memo="Supermercado Carrefour"
+            fitid="tx_similar",
+            account=account,
+            amount=Decimal("-100.00"),
+            date=date(2026, 1, 15),
+            memo="Supermercado Carrefour",
         )
         Expense.objects.create(
-            transaction=tx_similar, description="Compras Carrefour", subcategory=subcategory, reference_month=date(2026, 1, 1)
+            transaction=tx_similar,
+            description="Compras Carrefour",
+            subcategory=subcategory,
+            reference_month=date(2026, 1, 1),
         )
 
         tx_new = Transaction.objects.create(
-            fitid="tx_new", account=account, amount=Decimal("-150.00"), date=date(2026, 2, 15), memo="Supermercado Extra"
+            fitid="tx_new",
+            account=account,
+            amount=Decimal("-150.00"),
+            date=date(2026, 2, 15),
+            memo="Supermercado Extra",
         )
 
         mock_response = MagicMock()
         mock_response.raise_for_status.return_value = None
         mock_response.json.return_value = {
-            "response": json.dumps({"category": "Alimentação", "subcategory": "Supermercado", "description": "Compras"})
+            "response": json.dumps(
+                {
+                    "category": "Alimentação",
+                    "subcategory": "Supermercado",
+                    "description": "Compras",
+                }
+            )
         }
         mock_post.return_value = mock_response
 

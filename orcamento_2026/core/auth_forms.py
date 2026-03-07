@@ -32,9 +32,7 @@ class EmailLoginForm(forms.Form):
     )
 
     error_messages = {
-        "invalid_login": _(
-            "Email ou senha inválidos. Tente novamente."
-        ),
+        "invalid_login": _("Email ou senha inválidos. Tente novamente."),
         "inactive": _("Esta conta está inativa."),
     }
 

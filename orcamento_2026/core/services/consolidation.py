@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Serviço de consolidação de transações em despesas."""
-
 import logging
 from datetime import date
 from typing import TYPE_CHECKING

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Modelos do core do Orçamento 2026."""
-
 from datetime import date
 from decimal import Decimal
 
@@ -101,7 +99,9 @@ class Category(models.Model):
 class SubCategory(models.Model):
     """Subcategoria de despesa."""
 
-    category: Category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories")
+    category: Category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name="subcategories"
+    )
     name: str = models.CharField(max_length=100)
 
     def __str__(self) -> str:
@@ -152,7 +152,9 @@ class Transaction(models.Model):
 class Expense(models.Model):
     """Despesa consolidada a partir de uma transação."""
 
-    transaction: Transaction | None = models.OneToOneField(Transaction, on_delete=models.CASCADE, null=True, blank=True)
+    transaction: Transaction | None = models.OneToOneField(
+        Transaction, on_delete=models.CASCADE, null=True, blank=True
+    )
     description: str = models.CharField(max_length=255)
     subcategory: SubCategory = models.ForeignKey(SubCategory, on_delete=models.PROTECT)
     reference_month: date = models.DateField()
@@ -176,11 +178,19 @@ class TransactionSuggestion(models.Model):
         ("EDITADO", "Editado"),
     ]
 
-    transaction: Transaction = models.OneToOneField(Transaction, on_delete=models.CASCADE, related_name="suggestion")
-    category: Category | None = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    subcategory: SubCategory | None = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
+    transaction: Transaction = models.OneToOneField(
+        Transaction, on_delete=models.CASCADE, related_name="suggestion"
+    )
+    category: Category | None = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    subcategory: SubCategory | None = models.ForeignKey(
+        SubCategory, on_delete=models.SET_NULL, null=True, blank=True
+    )
     description: str | None = models.CharField(max_length=255, blank=True, null=True)
-    status: str = models.CharField(max_length=20, choices=STATUS_CHOICES, default="PENDENTE")
+    status: str = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default="PENDENTE"
+    )
     created_at: date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

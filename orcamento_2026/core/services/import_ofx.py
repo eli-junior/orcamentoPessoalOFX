@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Serviço de importação de arquivos OFX."""
-
 import hashlib
 import logging
 from datetime import date
@@ -22,14 +20,20 @@ def _generate_tx_hash(tx) -> str:
     return hashlib.sha256(content.encode()).hexdigest()[:16]
 
 
-def import_ofx(file_path: str, account: "Account", reference_date: date | None = None) -> dict[str, int]:
+def import_ofx(
+    file_path: str,
+    account: "Account",
+    reference_date: date | None = None,
+    use_transaction_date_as_reference: bool = False,
+) -> dict[str, int]:
     """
     Importa transações de um arquivo OFX para uma conta específica.
 
     Args:
         file_path: Caminho do arquivo OFX
         account: Conta para associar as transações
-        reference_date: Data de referência opcional
+        reference_date: Data de referência opcional (usada quando use_transaction_date_as_reference=False)
+        use_transaction_date_as_reference: Se True, usa a data de cada transação como reference_date
 
     Returns:
         Dicionário com estatísticas da importação
@@ -45,19 +49,17 @@ def import_ofx(file_path: str, account: "Account", reference_date: date | None =
         amount = Decimal(str(tx.amount))
         date_obj: date = tx.date.date()
 
-        # Gera hash secundário para deduplicação robusta
-        tx_hash = _generate_tx_hash(tx)
-
-        # Cria a transação se não existir (baseado no fitid)
-        # O FITID é a chave para evitar duplicatas
-        # Também verifica o hash como fallback
+        # Para contas correntes, usa a data da transação como referência
+        tx_reference_date = (
+            date_obj if use_transaction_date_as_reference else reference_date
+        )
         _, created = account.transaction_set.get_or_create(
             fitid=tx.id,
             defaults={
                 "amount": amount,
                 "date": date_obj,
                 "memo": tx.memo or "",
-                "reference_date": reference_date,
+                "reference_date": tx_reference_date,
             },
         )
 

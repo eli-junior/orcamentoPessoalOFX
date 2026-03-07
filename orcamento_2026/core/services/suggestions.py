@@ -117,7 +117,12 @@ def _build_prompt(
 
 def _call_ollama_api(prompt: str) -> dict | None:
     """Chama a API do Ollama e retorna a resposta parseada."""
-    payload = {"model": OLLAMA_MODEL, "prompt": prompt, "stream": False, "format": "json"}
+    payload = {
+        "model": OLLAMA_MODEL,
+        "prompt": prompt,
+        "stream": False,
+        "format": "json",
+    }
 
     try:
         response = requests.post(f"{OLLAMA_URL}/api/generate", json=payload, timeout=30)
@@ -163,7 +168,9 @@ def generate_suggestion_for_transaction(
         return None
 
     # Tenta encontrar a categoria e subcategoria
-    category = case_insensitive_get(Category.objects.all(), "name", data.get("category"))
+    category = case_insensitive_get(
+        Category.objects.all(), "name", data.get("category")
+    )
     subcategory = None
     if category:
         subcategory = case_insensitive_get(
@@ -203,4 +210,6 @@ def generate_suggestions_async(transaction_ids: list[int]) -> None:
 
     thread = threading.Thread(target=_worker, daemon=True)
     thread.start()
-    logger.info(f"Thread de sugestões iniciada para {len(transaction_ids)} transação(ões)")
+    logger.info(
+        f"Thread de sugestões iniciada para {len(transaction_ids)} transação(ões)"
+    )

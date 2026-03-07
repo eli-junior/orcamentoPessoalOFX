@@ -232,7 +232,10 @@ class TestConsolidateTransaction:
             memo="Test",
         )
 
-        with pytest.raises(ValueError, match="Subcategoria 'Inexistente' não encontrada na categoria 'Alimentação'"):
+        with pytest.raises(
+            ValueError,
+            match="Subcategoria 'Inexistente' não encontrada na categoria 'Alimentação'",
+        ):
             consolidate_transaction(
                 transaction=tx,
                 category_name="Alimentação",
@@ -256,7 +259,10 @@ class TestConsolidateTransaction:
             memo="Test",
         )
 
-        with pytest.raises(ValueError, match="Subcategoria 'Supermercado' não encontrada na categoria 'Transporte'"):
+        with pytest.raises(
+            ValueError,
+            match="Subcategoria 'Supermercado' não encontrada na categoria 'Transporte'",
+        ):
             consolidate_transaction(
                 transaction=tx,
                 category_name="Transporte",

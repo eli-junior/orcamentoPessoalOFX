@@ -7,7 +7,7 @@ DEBUG = False
 
 DATABASES = {"default": config("DATABASE_URL", cast=dburl)}
 
-MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")  # noqa: F405
 
 
 STORAGES = {
@@ -18,10 +18,10 @@ STORAGES = {
 
 # ── Cloudflare Tunnel: proxy headers e CSRF ─────────────────────────────────
 # Cloudflared passa requisições como HTTP local → Django precisa confiar no SSL do Cloudflare
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 USE_X_FORWARDED_HOST = True
 CSRF_TRUSTED_ORIGINS = [
-    'https://orcamento.elijunior.click',
+    "https://orcamento.elijunior.click",
 ]
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

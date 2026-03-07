@@ -36,14 +36,40 @@ services:
     command: production
     restart: unless-stopped
     volumes:
-      - dados:/app/dados
+      - ./dados:/app/dados
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
       - orcamento-net
 
+  # Serviço de desenvolvimento com shell interativo
+  dev:
+    build:
+      context: .
+      args:
+        UV_NO_DEV: false
+    env_file:
+      - .env
+    environment:
+      - TZ=America/Sao_Paulo
+      - DJANGO_SETTINGS_MODULE=orcamento_2026.settings.development
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./dados:/app/dados
+      - .:/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - orcamento-net
+    stdin_open: true
+    tty: true
+    command: /bin/zsh
+    profiles:
+      - dev
+
 volumes:
-  dados:
   postgres_data:
 
 networks:

@@ -41,19 +41,27 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     STATIC_ROOT="/staticfiles" \
     MEDIA_ROOT="/mediafiles"
 
-# Runtime libs apenas
+# Runtime libs apenas + ferramentas de shell
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     curl \
     tzdata \
+    zsh \
+    git \
+    vim \
     && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime \
     && echo $TZ > /etc/timezone \
     && rm -rf /var/lib/apt/lists/*
 
 # Cria diretórios e usuário não-root
-RUN mkdir -p /app /staticfiles /mediafiles \
-    && useradd -m -u 1001 appuser \
+# O diretório /app/dados será um bind mount, então as permissões serão herdadas do host
+# Mas criamos aqui para garantir que exista no build
+RUN mkdir -p /app /app/dados /app/dados/processados /staticfiles /mediafiles \
+    && useradd -m -u 1001 appuser || true \
     && chown -R appuser:appuser /app /staticfiles /mediafiles
+
+# Cria diretório de dados com permissões amplas para funcionar com bind mount
+RUN chmod 755 /app/dados
 
 # Copia venv do builder
 COPY --from=builder --chown=appuser:appuser /opt/venv /opt/venv
@@ -70,7 +78,27 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 # Cria diretório static para evitar warning do Django
 RUN mkdir -p /app/orcamento_2026/static
 
+# Instala Starship (prompt moderno) como root
+RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
+
+# Configura Zsh como shell padrão e adiciona Starship
+RUN chsh -s /bin/zsh appuser
+
+# Configurações do Zsh + Starship para o appuser
+RUN mkdir -p /app/.config && \
+    echo 'eval "$(starship init zsh)"' > /app/.zshrc && \
+    echo 'export PATH="/opt/venv/bin:$PATH"' >> /app/.zshrc && \
+    echo 'alias ll="ls -la"' >> /app/.zshrc && \
+    echo 'alias py="python"' >> /app/.zshrc && \
+    echo 'alias manage="python manage.py"' >> /app/.zshrc && \
+    chown -R appuser:appuser /app/.zshrc /app/.config
+
+# Configuração do Starship
+COPY --chown=appuser:appuser .devcontainer/starship.toml /app/.config/starship.toml
+
 USER appuser
+
+ENV SHELL=/bin/zsh
 
 EXPOSE 8000
 

@@ -22,9 +22,13 @@ class Command(BaseCommand):
         ]
 
         for name, acc_type in accounts_data:
-            obj, created = Account.objects.get_or_create(name=name, defaults={"type": acc_type})
+            obj, created = Account.objects.get_or_create(
+                name=name, defaults={"type": acc_type}
+            )
             if created:
-                self.stdout.write(self.style.SUCCESS(f"Conta criada: {name} ({acc_type})"))
+                self.stdout.write(
+                    self.style.SUCCESS(f"Conta criada: {name} ({acc_type})")
+                )
             else:
                 self.stdout.write(f"Conta já existente: {name}")
 
@@ -32,21 +36,66 @@ class Command(BaseCommand):
         categories_data = [
             {
                 "category": "Moradia",
-                "subcategories": ["Aluguel", "Condomínio", "Energia", "Internet", "Manutenção", "Utensílios", "Eletrônicos", "Outros"],
+                "subcategories": [
+                    "Aluguel",
+                    "Condomínio",
+                    "Energia",
+                    "Internet",
+                    "Manutenção",
+                    "Utensílios",
+                    "Eletrônicos",
+                    "Outros",
+                ],
             },
             {
                 "category": "Alimentação",
-                "subcategories": ["Supermercado", "Restaurante", "Delivery", "Feira", "Lanches", "Bares", "Outros"],
+                "subcategories": [
+                    "Supermercado",
+                    "Restaurante",
+                    "Delivery",
+                    "Feira",
+                    "Lanches",
+                    "Bares",
+                    "Outros",
+                ],
             },
-            {"category": "Cuidados Pessoais", "subcategories": ["Roupas", "Salão de Beleza", "Acessórios", "Outros"]},
+            {
+                "category": "Cuidados Pessoais",
+                "subcategories": ["Roupas", "Salão de Beleza", "Acessórios", "Outros"],
+            },
             {
                 "category": "Transporte",
-                "subcategories": ["Abastecimento", "Transporte APP", "Lavagem", "Estacionamento", "Manutenção Veículo", "Outros"],
+                "subcategories": [
+                    "Abastecimento",
+                    "Transporte APP",
+                    "Lavagem",
+                    "Estacionamento",
+                    "Manutenção Veículo",
+                    "Outros",
+                ],
             },
-            {"category": "Saúde", "subcategories": ["Farmácia", "Suplementos", "Plano de Saúde", "Academia", "Outros"]},
-            {"category": "Lazer", "subcategories": ["Cinema", "Viagem", "Streaming", "Jogos", "Outros"]},
-            {"category": "Educação", "subcategories": ["Cursos", "Livros", "Materiais", "Outros"]},
-            {"category": "Financeiro", "subcategories": ["Tarifas", "Impostos", "Outros"]},
+            {
+                "category": "Saúde",
+                "subcategories": [
+                    "Farmácia",
+                    "Suplementos",
+                    "Plano de Saúde",
+                    "Academia",
+                    "Outros",
+                ],
+            },
+            {
+                "category": "Lazer",
+                "subcategories": ["Cinema", "Viagem", "Streaming", "Jogos", "Outros"],
+            },
+            {
+                "category": "Educação",
+                "subcategories": ["Cursos", "Livros", "Materiais", "Outros"],
+            },
+            {
+                "category": "Financeiro",
+                "subcategories": ["Tarifas", "Impostos", "Outros"],
+            },
         ]
 
         for item in categories_data:
@@ -56,8 +105,12 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"Categoria criada: {cat_name}"))
 
             for sub_name in item["subcategories"]:
-                sub, sub_created = SubCategory.objects.get_or_create(name=sub_name, category=category)
+                sub, sub_created = SubCategory.objects.get_or_create(
+                    name=sub_name, category=category
+                )
                 if sub_created:
-                    self.stdout.write(self.style.SUCCESS(f"  - Subcategoria criada: {sub_name}"))
+                    self.stdout.write(
+                        self.style.SUCCESS(f"  - Subcategoria criada: {sub_name}")
+                    )
 
         self.stdout.write(self.style.SUCCESS("População concluída com sucesso!"))
