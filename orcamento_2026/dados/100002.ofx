@@ -1,0 +1,654 @@
+OFXHEADER:100DATA:OFXSGMLVERSION:102SECURITY:NONEENCODING:USASCIICHARSET:1252COMPRESSION:NONEOLDFILEUID:NONENEWFILEUID:NONE<OFX>
+   <SIGNONMSGSRSV1>
+      <SONRS>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <DTSERVER>20260303120000[-3:BRT]</DTSERVER>
+         <LANGUAGE>POR</LANGUAGE>
+         <FI>
+            <ORG>Banco do Brasil</ORG>
+            <FID>1</FID>
+         </FI>
+      </SONRS>
+   </SIGNONMSGSRSV1>
+   <BANKMSGSRSV1>
+      <STMTTRNRS>
+         <TRNUID>1</TRNUID>
+         <STATUS>
+            <CODE>0</CODE>
+            <SEVERITY>INFO</SEVERITY>
+         </STATUS>
+         <STMTRS>
+            <CURDEF>BRL</CURDEF>
+            <BANKACCTFROM>
+               <BANKID>1</BANKID>
+               <BRANCHID>1226-2</BRANCHID>
+               <ACCTID>100002-0</ACCTID>
+               <ACCTTYPE>CHECKING</ACCTTYPE>
+            </BANKACCTFROM>
+            <BANKTRANLIST>
+               <DTSTART>20260130120000[-3:BRT]</DTSTART>
+               <DTEND>20260303120000[-3:BRT]</DTEND>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>2400.00</TRNAMT>
+                  <FITID>2026020202400000</FITID>
+                  <CHECKNUM>414000056561</CHECKNUM>
+                  <REFNUM>601.414.000.056.561</REFNUM>
+                  <MEMO>Transferência recebida - 31/01 09:45 CAMILA RODRIGUES AZEVEDO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>105.23</TRNAMT>
+                  <FITID>202602020105230</FITID>
+                  <CHECKNUM>330600062834</CHECKNUM>
+                  <REFNUM>100.330.600.062.834</REFNUM>
+                  <MEMO>Cashback Shopping BB</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-120.00</TRNAMT>
+                  <FITID>202602021120000</FITID>
+                  <CHECKNUM>000000020201</CHECKNUM>
+                  <REFNUM>20.201</REFNUM>
+                  <MEMO>Pix - Enviado - 31/01 09:48 CAMILA RODRIGUES AZEVEDO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-360.00</TRNAMT>
+                  <FITID>202602021360000</FITID>
+                  <CHECKNUM>000000020202</CHECKNUM>
+                  <REFNUM>20.202</REFNUM>
+                  <MEMO>Pix - Enviado - 31/01 14:41 Josimar dos Santos Machad</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-300.00</TRNAMT>
+                  <FITID>202602021300000</FITID>
+                  <CHECKNUM>000000020203</CHECKNUM>
+                  <REFNUM>20.203</REFNUM>
+                  <MEMO>Pix - Enviado - 31/01 14:56 GENOVEVA MARIA FROTA CARN</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-366.94</TRNAMT>
+                  <FITID>202602021366940</FITID>
+                  <CHECKNUM>000000020204</CHECKNUM>
+                  <REFNUM>20.204</REFNUM>
+                  <MEMO>Pix - Enviado - 31/01 15:30 PICHAU INFORMATICA</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-35.75</TRNAMT>
+                  <FITID>20260202135750</FITID>
+                  <CHECKNUM>000000020205</CHECKNUM>
+                  <REFNUM>20.205</REFNUM>
+                  <MEMO>Pix - Enviado - 01/02 19:48 TELEFONICA BRAS</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260202120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-1322.54</TRNAMT>
+                  <FITID>2026020211322540</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260203120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-50.00</TRNAMT>
+                  <FITID>20260203150000</FITID>
+                  <CHECKNUM>000000020301</CHECKNUM>
+                  <REFNUM>20.301</REFNUM>
+                  <MEMO>Pix - Enviado - 03/02 14:40 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260203120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>50.00</TRNAMT>
+                  <FITID>20260203050000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260204120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>500.00</TRNAMT>
+                  <FITID>202602040500000</FITID>
+                  <CHECKNUM>040581344661</CHECKNUM>
+                  <REFNUM>41.040.581.344.661</REFNUM>
+                  <MEMO>Pix - Recebido - 04/02 10:40 11420081187 LUZIA APARECID</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260204120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-150.00</TRNAMT>
+                  <FITID>202602041150000</FITID>
+                  <CHECKNUM>000000020401</CHECKNUM>
+                  <REFNUM>20.401</REFNUM>
+                  <MEMO>Pix - Enviado - 04/02 15:02 ALDERLAN ALMEIDA GOMES</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260204120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-350.00</TRNAMT>
+                  <FITID>202602041350000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260205120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-1000.00</TRNAMT>
+                  <FITID>2026020511000000</FITID>
+                  <CHECKNUM>000000020501</CHECKNUM>
+                  <REFNUM>20.501</REFNUM>
+                  <MEMO>Pix - Enviado - 05/02 16:58 RICARDO AZEVEDO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260205120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>1000.00</TRNAMT>
+                  <FITID>2026020501000000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260206120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>173.57</TRNAMT>
+                  <FITID>202602060173570</FITID>
+                  <CHECKNUM>007367793002</CHECKNUM>
+                  <REFNUM>61.007.367.793.002</REFNUM>
+                  <MEMO>Pix - Recebido - 06/02 10:07 00071956450106 ELI SERGIO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260206120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-20.00</TRNAMT>
+                  <FITID>20260206120000</FITID>
+                  <CHECKNUM>000000020601</CHECKNUM>
+                  <REFNUM>20.601</REFNUM>
+                  <MEMO>Pix - Enviado - 06/02 21:27 Neuma Maria dos Santos Co</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260206120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-153.57</TRNAMT>
+                  <FITID>202602061153570</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260209120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-45.00</TRNAMT>
+                  <FITID>20260209145000</FITID>
+                  <CHECKNUM>000000020901</CHECKNUM>
+                  <REFNUM>20.901</REFNUM>
+                  <MEMO>Pix - Enviado - 07/02 13:06 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260209120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-250.00</TRNAMT>
+                  <FITID>202602091250000</FITID>
+                  <CHECKNUM>000000020902</CHECKNUM>
+                  <REFNUM>20.902</REFNUM>
+                  <MEMO>Pix - Enviado - 08/02 19:02 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260209120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>295.00</TRNAMT>
+                  <FITID>202602090295000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260210120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-0.01</TRNAMT>
+                  <FITID>20260210110</FITID>
+                  <CHECKNUM>000000021001</CHECKNUM>
+                  <REFNUM>21.001</REFNUM>
+                  <MEMO>Pix - Enviado - 10/02 11:30 ELI SERGIO BEZERRA DE MEL</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260210120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>0.01</TRNAMT>
+                  <FITID>20260210010</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260211120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-120.00</TRNAMT>
+                  <FITID>202602111120000</FITID>
+                  <CHECKNUM>000000021101</CHECKNUM>
+                  <REFNUM>21.101</REFNUM>
+                  <MEMO>Pix - Enviado - 11/02 10:23 MARANHAO ATLETICO CLUBE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260211120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-150.00</TRNAMT>
+                  <FITID>202602111150000</FITID>
+                  <CHECKNUM>000000021102</CHECKNUM>
+                  <REFNUM>21.102</REFNUM>
+                  <MEMO>Pix - Enviado - 11/02 17:34 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260211120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>270.00</TRNAMT>
+                  <FITID>202602110270000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260213120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-58.74</TRNAMT>
+                  <FITID>20260213158740</FITID>
+                  <CHECKNUM>000000021301</CHECKNUM>
+                  <REFNUM>21.301</REFNUM>
+                  <MEMO>Pix - Enviado - 13/02 21:13 Claro</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260213120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>58.74</TRNAMT>
+                  <FITID>20260213058740</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260218120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>171.65</TRNAMT>
+                  <FITID>202602180171650</FITID>
+                  <CHECKNUM>739275424732</CHECKNUM>
+                  <REFNUM>141.739.275.424.732</REFNUM>
+                  <MEMO>Pix-Envio devolvido - 14/02 17:39 SHPP BRASIL INSTITUICAO DE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260218120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-15.00</TRNAMT>
+                  <FITID>20260218115000</FITID>
+                  <CHECKNUM>000000021802</CHECKNUM>
+                  <REFNUM>21.802</REFNUM>
+                  <MEMO>Pix - Enviado - 16/02 16:42 Maria Rita Silva Lima</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260218120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-156.65</TRNAMT>
+                  <FITID>202602181156650</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>8100.00</TRNAMT>
+                  <FITID>2026022008100000</FITID>
+                  <CHECKNUM>414000056561</CHECKNUM>
+                  <REFNUM>601.414.000.056.561</REFNUM>
+                  <MEMO>Transferência recebida - 20/02 13:20 CAMILA RODRIGUES AZEVEDO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>8675.42</TRNAMT>
+                  <FITID>2026022008675420</FITID>
+                  <CHECKNUM>000000002804</CHECKNUM>
+                  <REFNUM>2.804</REFNUM>
+                  <MEMO>Recebimento de Proventos - 00.000.000/0001-91 BANCO DO BRASIL S A</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-6048.36</TRNAMT>
+                  <FITID>2026022016048360</FITID>
+                  <CHECKNUM>122600028222</CHECKNUM>
+                  <REFNUM>260.122.600.028.222</REFNUM>
+                  <MEMO>Pagto cartão crédito</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-352.20</TRNAMT>
+                  <FITID>202602201352200</FITID>
+                  <CHECKNUM>122600191604</CHECKNUM>
+                  <REFNUM>260.122.600.191.604</REFNUM>
+                  <MEMO>Pagto cartão crédito</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-78.24</TRNAMT>
+                  <FITID>20260220178240</FITID>
+                  <CHECKNUM>122600226278</CHECKNUM>
+                  <REFNUM>260.122.600.226.278</REFNUM>
+                  <MEMO>Pagto cartão crédito</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-60.00</TRNAMT>
+                  <FITID>20260220160000</FITID>
+                  <CHECKNUM>000000022002</CHECKNUM>
+                  <REFNUM>22.002</REFNUM>
+                  <MEMO>Pix - Enviado - 20/02 09:36 Josimar dos Santos Machad</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-3202.00</TRNAMT>
+                  <FITID>2026022013202000</FITID>
+                  <CHECKNUM>000000022003</CHECKNUM>
+                  <REFNUM>22.003</REFNUM>
+                  <MEMO>Pagamento de Boleto - KARINA IMOVEIS LTDA</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-600.00</TRNAMT>
+                  <FITID>202602201600000</FITID>
+                  <CHECKNUM>000000022004</CHECKNUM>
+                  <REFNUM>22.004</REFNUM>
+                  <MEMO>Pix - Enviado - 20/02 12:13 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-9.90</TRNAMT>
+                  <FITID>2026022019900</FITID>
+                  <CHECKNUM>000000022005</CHECKNUM>
+                  <REFNUM>22.005</REFNUM>
+                  <MEMO>Pix - Enviado - 20/02 12:14 MERCADO PAGO INSTITUICAO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-1612.77</TRNAMT>
+                  <FITID>2026022011612770</FITID>
+                  <CHECKNUM>000000022006</CHECKNUM>
+                  <REFNUM>22.006</REFNUM>
+                  <MEMO>Pagamento de Boleto - BANCO INTER SA</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-150.96</TRNAMT>
+                  <FITID>202602201150960</FITID>
+                  <CHECKNUM>000000022007</CHECKNUM>
+                  <REFNUM>22.007</REFNUM>
+                  <MEMO>Pagamento de Boleto - FIXTELL TELECOM NE LTDA</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-35.00</TRNAMT>
+                  <FITID>20260220135000</FITID>
+                  <CHECKNUM>000000022008</CHECKNUM>
+                  <REFNUM>22.008</REFNUM>
+                  <MEMO>Pix - Enviado - 20/02 13:37 TELEFONICA BRAS</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-500.00</TRNAMT>
+                  <FITID>202602201500000</FITID>
+                  <CHECKNUM>000000022009</CHECKNUM>
+                  <REFNUM>22.009</REFNUM>
+                  <MEMO>Pix - Enviado - 20/02 19:36 ELI SERGIO BEZERRA DE MEL</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-10.00</TRNAMT>
+                  <FITID>20260220110000</FITID>
+                  <CHECKNUM>000000022010</CHECKNUM>
+                  <REFNUM>22.010</REFNUM>
+                  <MEMO>Pix - Enviado - 20/02 19:36 Edinete Dos Reis de Faria</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-3162.09</TRNAMT>
+                  <FITID>2026022013162090</FITID>
+                  <CHECKNUM>511000340883</CHECKNUM>
+                  <REFNUM>880.511.000.340.883</REFNUM>
+                  <MEMO>Pgto BB Crédito Veículo - 163753746-BB CRÉDITO VEÍCULO FUNCI</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-55.41</TRNAMT>
+                  <FITID>20260220155410</FITID>
+                  <CHECKNUM>000000043223</CHECKNUM>
+                  <REFNUM>43.223</REFNUM>
+                  <MEMO>ANABB-Assoc Nac Func BB - ANABB MENSALIDADE</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260220120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-898.49</TRNAMT>
+                  <FITID>202602201898490</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260223120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-140.00</TRNAMT>
+                  <FITID>202602231140000</FITID>
+                  <CHECKNUM>000000022301</CHECKNUM>
+                  <REFNUM>22.301</REFNUM>
+                  <MEMO>Pagamento de Boleto - EQUATORIAL MARANHAO DISTRIBUIDORA DE E</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260223120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-100.00</TRNAMT>
+                  <FITID>202602231100000</FITID>
+                  <CHECKNUM>000000022302</CHECKNUM>
+                  <REFNUM>22.302</REFNUM>
+                  <MEMO>Pix - Enviado - 22/02 10:41 LAGOINHA SAO LUIS</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260223120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>240.00</TRNAMT>
+                  <FITID>202602230240000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260224120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>270.00</TRNAMT>
+                  <FITID>202602240270000</FITID>
+                  <CHECKNUM>972000128499</CHECKNUM>
+                  <REFNUM>602.972.000.128.499</REFNUM>
+                  <MEMO>Transferência recebida - 24/02 08:48 RICARDO AZEVEDO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260224120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-270.00</TRNAMT>
+                  <FITID>202602241270000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260226120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-100.00</TRNAMT>
+                  <FITID>202602261100000</FITID>
+                  <CHECKNUM>000000022601</CHECKNUM>
+                  <REFNUM>22.601</REFNUM>
+                  <MEMO>Pix - Enviado - 26/02 08:53 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260226120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-300.00</TRNAMT>
+                  <FITID>202602261300000</FITID>
+                  <CHECKNUM>000000022602</CHECKNUM>
+                  <REFNUM>22.602</REFNUM>
+                  <MEMO>Pix - Enviado - 26/02 08:58 ELI SERGIO BEZERRA DE MEL</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260226120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-40.00</TRNAMT>
+                  <FITID>20260226140000</FITID>
+                  <CHECKNUM>000000022603</CHECKNUM>
+                  <REFNUM>22.603</REFNUM>
+                  <MEMO>Pix - Enviado - 26/02 19:56 COMERCIAL CARTAGENES</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260226120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>440.00</TRNAMT>
+                  <FITID>202602260440000</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil - Rende Facil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260227120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>99.92</TRNAMT>
+                  <FITID>20260227099920</FITID>
+                  <CHECKNUM>580800053335</CHECKNUM>
+                  <REFNUM>100.580.800.053.335</REFNUM>
+                  <MEMO>Movimento do Dia</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260227120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-99.92</TRNAMT>
+                  <FITID>20260227199920</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260302120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>2400.00</TRNAMT>
+                  <FITID>2026030202400000</FITID>
+                  <CHECKNUM>414000056561</CHECKNUM>
+                  <REFNUM>601.414.000.056.561</REFNUM>
+                  <MEMO>Transferência recebida - 02/03 10:01 CAMILA RODRIGUES AZEVEDO</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260302120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>12871.87</TRNAMT>
+                  <FITID>20260302012871870</FITID>
+                  <CHECKNUM>887002804179</CHECKNUM>
+                  <REFNUM>5.887.002.804.179</REFNUM>
+                  <MEMO>PLR</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260302120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-100.00</TRNAMT>
+                  <FITID>202603021100000</FITID>
+                  <CHECKNUM>000000030201</CHECKNUM>
+                  <REFNUM>30.201</REFNUM>
+                  <MEMO>Pix - Enviado - 02/03 06:10 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260302120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-847.08</TRNAMT>
+                  <FITID>202603021847080</FITID>
+                  <CHECKNUM>000000030202</CHECKNUM>
+                  <REFNUM>30.202</REFNUM>
+                  <MEMO>Pix - Enviado - 02/03 09:54 ELI SERGIO BEZERRA DE MEL</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260302120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-400.00</TRNAMT>
+                  <FITID>202603021400000</FITID>
+                  <CHECKNUM>000000030203</CHECKNUM>
+                  <REFNUM>30.203</REFNUM>
+                  <MEMO>Pix - Enviado - 02/03 11:42 ELI SERGIO BEZERRA DE MEL</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260302120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-13924.79</TRNAMT>
+                  <FITID>20260302113924790</FITID>
+                  <CHECKNUM>000000009903</CHECKNUM>
+                  <REFNUM>9.903</REFNUM>
+                  <MEMO>BB Rende Fácil</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260303120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-499.43</TRNAMT>
+                  <FITID>202603031499430</FITID>
+                  <CHECKNUM>000000030301</CHECKNUM>
+                  <REFNUM>30.301</REFNUM>
+                  <MEMO>Pix - Enviado - 03/03 10:35 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260303120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-445.76</TRNAMT>
+                  <FITID>202603031445760</FITID>
+                  <CHECKNUM>000000030302</CHECKNUM>
+                  <REFNUM>30.302</REFNUM>
+                  <MEMO>Pix - Enviado - 03/03 10:49 RECEITA FEDERAL</MEMO>
+               </STMTTRN>
+               <STMTTRN>
+                  <TRNTYPE>OTHER</TRNTYPE>
+                  <DTPOSTED>20260303120000[-3:BRT]</DTPOSTED>
+                  <TRNAMT>-300.00</TRNAMT>
+                  <FITID>202603031300000</FITID>
+                  <CHECKNUM>000000030303</CHECKNUM>
+                  <REFNUM>30.303</REFNUM>
+                  <MEMO>Pix - Enviado - 03/03 14:04 Elizangela Santos Barbosa</MEMO>
+               </STMTTRN>
+            </BANKTRANLIST>
+            <LEDGERBAL>
+               <BALAMT>-1245.19</BALAMT>
+               <DTASOF>20260303120000[-3:BRT]</DTASOF>
+            </LEDGERBAL>
+         </STMTRS>
+      </STMTTRNRS>
+   </BANKMSGSRSV1>
+</OFX>

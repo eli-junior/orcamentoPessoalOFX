@@ -50,7 +50,7 @@
                                name="search"
                                id="search"
                                value="{{ request.GET.search }}"
-                               class="block w-full rounded-md border-0 py-1.5 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                               class="block w-full rounded-md border-0 py-2.5 px-3 pl-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                placeholder="Descrição, valor...">
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                         <label for="account" class="block text-sm font-medium leading-6 text-gray-900">Conta</label>
                          <select name="account"
                                 id="account"
-                                class="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                class="mt-1 block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             <option value="">Todas Contas</option>
                             {% for acc in accounts %}
                                 <option value="{{ acc.id }}"
@@ -72,7 +72,7 @@
                         <label for="has_expense" class="block text-sm font-medium leading-6 text-gray-900">Status</label>
                         <select name="has_expense"
                                 id="has_expense"
-                                class="mt-1 block w-full rounded-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                class="mt-1 block w-full rounded-md border-0 py-2.5 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
                             <option value="">Todos</option>
                             <option value="yes"
                                     {% if request.GET.has_expense == 'yes' %}selected{% endif %}>Consolidadas</option>

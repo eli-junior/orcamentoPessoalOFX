@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
-from django.db.models import Q, Sum
+from django.db.models import Count, Q, Sum
 from django.db.models.functions import Abs, TruncMonth
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -31,7 +31,11 @@ from orcamento_2026.core.forms import (
 from orcamento_2026.core.models import Account, Category, Expense, SubCategory, Transaction, TransactionSuggestion
 from orcamento_2026.core.services.consolidation import consolidate_transaction, get_unconsolidated_transactions
 from orcamento_2026.core.services.import_ofx import import_ofx
-from orcamento_2026.core.services.suggestions import generate_suggestion_for_transaction, get_pending_suggestions
+from orcamento_2026.core.services.suggestions import (
+    generate_suggestion_for_transaction,
+    generate_suggestions_async,
+    get_pending_suggestions,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -59,20 +63,17 @@ def dashboard(request):
         if form.cleaned_data.get("end_date"):
             end_date = form.cleaned_data["end_date"]
 
-    # Estatísticas gerais
-    total_expenses = Expense.objects.filter(
-        reference_month__gte=start_date,
-        reference_month__lte=end_date,
-        is_ignored=False,
-    ).count()
-
-    total_amount = Expense.objects.filter(
+    # Estatísticas gerais - combinadas em uma única query para evitar duplicação
+    expense_stats = Expense.objects.filter(
         reference_month__gte=start_date,
         reference_month__lte=end_date,
         is_ignored=False,
     ).aggregate(
-        total=Sum(Abs("transaction__amount"))
-    )["total"] or Decimal("0")
+        total_count=Count("id"),
+        total_amount=Sum(Abs("transaction__amount")),
+    )
+    total_expenses = expense_stats["total_count"] or 0
+    total_amount = expense_stats["total_amount"] or Decimal("0")
 
     unconsolidated_count = get_unconsolidated_transactions().count()
     pending_suggestions = get_pending_suggestions().count()
@@ -362,26 +363,34 @@ class ExpenseListView(LoginRequiredMixin, ListView):
     context_object_name = "expenses"
     paginate_by = 25
 
+    def _build_filters(self) -> dict:
+        """Extrai filtros da request para reutilização."""
+        filters = {}
+        category = self.request.GET.get("category")
+        subcategory = self.request.GET.get("subcategory")
+        is_ignored = self.request.GET.get("is_ignored")
+        month = self.request.GET.get("month")
+        if category:
+            filters["subcategory__category_id"] = category
+        if subcategory:
+            filters["subcategory_id"] = subcategory
+        if is_ignored:
+            filters["is_ignored"] = is_ignored == "true"
+        if month:
+            filters["reference_month__month"] = month
+        return filters
+
     def get_queryset(self):
         queryset = super().get_queryset()
 
         # Filtros
-        category = self.request.GET.get("category")
-        subcategory = self.request.GET.get("subcategory")
-        search = self.request.GET.get("search")
-        is_ignored = self.request.GET.get("is_ignored")
-        month = self.request.GET.get("month")
+        filters = self._build_filters()
+        queryset = queryset.filter(**filters)
 
-        if category:
-            queryset = queryset.filter(subcategory__category_id=category)
-        if subcategory:
-            queryset = queryset.filter(subcategory_id=subcategory)
+        # Filtro de busca usa Q() - não pode ser incluído no dict
+        search = self.request.GET.get("search")
         if search:
             queryset = queryset.filter(Q(description__icontains=search) | Q(transaction__memo__icontains=search))
-        if is_ignored:
-            queryset = queryset.filter(is_ignored=is_ignored == "true")
-        if month:
-            queryset = queryset.filter(reference_month__month=month)
 
         return queryset.select_related("subcategory__category", "transaction").order_by("-reference_month")
 
@@ -389,7 +398,13 @@ class ExpenseListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
         context["subcategories"] = SubCategory.objects.all()
-        context["total_amount"] = self.get_queryset().aggregate(total=Sum("transaction__amount"))["total"] or Decimal("0")
+        # Usa aggregation direta com os mesmos filtros aplicados — NÃO chama get_queryset()
+        filters = self._build_filters()
+        context["total_amount"] = (
+            Expense.objects.filter(**filters)
+            .aggregate(total=Sum(Abs("transaction__amount")))["total"]
+            or Decimal("0")
+        )
         return context
 
 
@@ -556,24 +571,24 @@ def suggestion_list(request):
 def suggestion_generate(request):
     """Gerar sugestões para transações sem sugestão."""
     if request.method == "POST":
-        # Transações sem sugestão
+        # Transações sem sugestão - busca até 50
         transactions_without_suggestion = Transaction.objects.filter(
             expense__isnull=True,
             suggestion__isnull=True,
-        )[
-            :10
-        ]  # Processa 10 por vez
+        )[:50]
 
-        count = 0
-        for transaction in transactions_without_suggestion:
-            suggestion = generate_suggestion_for_transaction(transaction)
-            if suggestion:
-                count += 1
+        transaction_ids = list(transactions_without_suggestion.values_list("id", flat=True))
 
-        if count > 0:
-            messages.success(request, f"{count} sugestões geradas com sucesso!")
+        if transaction_ids:
+            # Inicia processamento assíncrono para não bloquear o request
+            generate_suggestions_async(transaction_ids)
+            messages.success(
+                request,
+                f"Processamento de {len(transaction_ids)} sugestões iniciado em background. "
+                "As sugestões aparecerão em breve na lista."
+            )
         else:
-            messages.info(request, "Nenhuma sugestão foi gerada. Verifique se o Ollama está disponível.")
+            messages.info(request, "Nenhuma transação pendente de sugestão encontrada.")
 
         return redirect("suggestion_list")
 
@@ -651,7 +666,11 @@ def import_ofx_view(request):
 
             try:
                 result = import_ofx(tmp_path, account, reference_date)
-                messages.success(request, f"Importação concluída! {result['transactions_created']} transações criadas.")
+                messages.success(
+                    request,
+                    f"Importação concluída! {result['transactions_created']} transações criadas, "
+                    f"{result['transactions_skipped']} duplicatas ignoradas."
+                )
                 return redirect("transaction_list")
             except Exception as e:
                 messages.error(request, f"Erro na importação: {str(e)}")
