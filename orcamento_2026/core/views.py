@@ -28,8 +28,18 @@ from orcamento_2026.core.forms import (
     OFXImportForm,
     SubCategoryForm,
 )
-from orcamento_2026.core.models import Account, Category, Expense, SubCategory, Transaction, TransactionSuggestion
-from orcamento_2026.core.services.consolidation import consolidate_transaction, get_unconsolidated_transactions
+from orcamento_2026.core.models import (
+    Account,
+    Category,
+    Expense,
+    SubCategory,
+    Transaction,
+    TransactionSuggestion,
+)
+from orcamento_2026.core.services.consolidation import (
+    consolidate_transaction,
+    get_unconsolidated_transactions,
+)
 from orcamento_2026.core.services.import_ofx import import_ofx
 from orcamento_2026.core.services.suggestions import (
     generate_suggestions_async,
@@ -96,7 +106,17 @@ def dashboard(request):
         textinfo="label+percent",
         textposition="outside",
         automargin=True,
-        marker=dict(colors=["#6366f1", "#8b5cf6", "#ec4899", "#f97316", "#22c55e", "#06b6d4", "#a855f7"]),
+        marker=dict(
+            colors=[
+                "#6366f1",
+                "#8b5cf6",
+                "#ec4899",
+                "#f97316",
+                "#22c55e",
+                "#06b6d4",
+                "#a855f7",
+            ]
+        ),
     )
     pie_layout = go.Layout(
         title="Despesas por Categoria",
@@ -104,7 +124,10 @@ def dashboard(request):
         margin=dict(l=20, r=20, t=40, b=20),
         height=350,
     )
-    pie_chart = json.dumps(go.Figure(data=[pie_data], layout=pie_layout), cls=plotly.utils.PlotlyJSONEncoder)
+    pie_chart = json.dumps(
+        go.Figure(data=[pie_data], layout=pie_layout),
+        cls=plotly.utils.PlotlyJSONEncoder,
+    )
 
     # Gráfico 2: Evolução Mensal (Line Chart)
     monthly_data = (
@@ -140,7 +163,10 @@ def dashboard(request):
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
     )
-    line_chart = json.dumps(go.Figure(data=[line_data], layout=line_layout), cls=plotly.utils.PlotlyJSONEncoder)
+    line_chart = json.dumps(
+        go.Figure(data=[line_data], layout=line_layout),
+        cls=plotly.utils.PlotlyJSONEncoder,
+    )
 
     # Gráfico 3: Top Subcategorias (Bar Chart)
     top_subcategories = (
@@ -172,7 +198,10 @@ def dashboard(request):
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
     )
-    bar_chart = json.dumps(go.Figure(data=[bar_data], layout=bar_layout), cls=plotly.utils.PlotlyJSONEncoder)
+    bar_chart = json.dumps(
+        go.Figure(data=[bar_data], layout=bar_layout),
+        cls=plotly.utils.PlotlyJSONEncoder,
+    )
 
     # Gráfico 4: Comparativo por Conta (Bar Chart)
     expenses_by_account = (
@@ -203,7 +232,10 @@ def dashboard(request):
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
     )
-    account_chart = json.dumps(go.Figure(data=[account_data], layout=account_layout), cls=plotly.utils.PlotlyJSONEncoder)
+    account_chart = json.dumps(
+        go.Figure(data=[account_data], layout=account_layout),
+        cls=plotly.utils.PlotlyJSONEncoder,
+    )
 
     context = {
         "form": form,
@@ -389,9 +421,14 @@ class ExpenseListView(LoginRequiredMixin, ListView):
         # Filtro de busca usa Q() - não pode ser incluído no dict
         search = self.request.GET.get("search")
         if search:
-            queryset = queryset.filter(Q(description__icontains=search) | Q(transaction__memo__icontains=search))
+            queryset = queryset.filter(
+                Q(description__icontains=search)
+                | Q(transaction__memo__icontains=search)
+            )
 
-        return queryset.select_related("subcategory__category", "transaction").order_by("-reference_month")
+        return queryset.select_related("subcategory__category", "transaction").order_by(
+            "-reference_month"
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -399,11 +436,9 @@ class ExpenseListView(LoginRequiredMixin, ListView):
         context["subcategories"] = SubCategory.objects.all()
         # Usa aggregation direta com os mesmos filtros aplicados — NÃO chama get_queryset()
         filters = self._build_filters()
-        context["total_amount"] = (
-            Expense.objects.filter(**filters)
-            .aggregate(total=Sum(Abs("transaction__amount")))["total"]
-            or Decimal("0")
-        )
+        context["total_amount"] = Expense.objects.filter(**filters).aggregate(
+            total=Sum(Abs("transaction__amount"))
+        )["total"] or Decimal("0")
         return context
 
 
@@ -512,7 +547,10 @@ def transaction_consolidate(request, pk):
                     description=form.cleaned_data["description"],
                     reference_month=form.cleaned_data["reference_month"],
                 )
-                messages.success(request, f"Transação consolidada com sucesso! Despesa #{expense.id} criada.")
+                messages.success(
+                    request,
+                    f"Transação consolidada com sucesso! Despesa #{expense.id} criada.",
+                )
                 return redirect("transaction_list")
             except ValueError as e:
                 messages.error(request, str(e))
@@ -576,7 +614,9 @@ def suggestion_generate(request):
             suggestion__isnull=True,
         )[:50]
 
-        transaction_ids = list(transactions_without_suggestion.values_list("id", flat=True))
+        transaction_ids = list(
+            transactions_without_suggestion.values_list("id", flat=True)
+        )
 
         if transaction_ids:
             # Inicia processamento assíncrono para não bloquear o request
@@ -584,7 +624,7 @@ def suggestion_generate(request):
             messages.success(
                 request,
                 f"Processamento de {len(transaction_ids)} sugestões iniciado em background. "
-                "As sugestões aparecerão em breve na lista."
+                "As sugestões aparecerão em breve na lista.",
             )
         else:
             messages.info(request, "Nenhuma transação pendente de sugestão encontrada.")
@@ -604,7 +644,9 @@ def suggestion_accept(request, pk):
             expense = consolidate_transaction(
                 transaction=suggestion.transaction,
                 category_name=suggestion.category.name if suggestion.category else "",
-                subcategory_name=suggestion.subcategory.name if suggestion.subcategory else "",
+                subcategory_name=suggestion.subcategory.name
+                if suggestion.subcategory
+                else "",
                 description=suggestion.description or suggestion.transaction.memo,
                 reference_month=suggestion.transaction.date,
             )
@@ -668,7 +710,7 @@ def import_ofx_view(request):
                 messages.success(
                     request,
                     f"Importação concluída! {result['transactions_created']} transações criadas, "
-                    f"{result['transactions_skipped']} duplicatas ignoradas."
+                    f"{result['transactions_skipped']} duplicatas ignoradas.",
                 )
                 return redirect("transaction_list")
             except Exception as e:

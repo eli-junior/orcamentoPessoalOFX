@@ -12,7 +12,9 @@ class Command(BaseCommand):
         # transactions = Transaction.objects.filter(expense__isnull=True, suggestion__isnull=True).order_by('date')
         # Django 'suggestion__isnull=True' works for reverse OneToOne relation check
 
-        pending_transactions = Transaction.objects.filter(expense__isnull=True).order_by("date")
+        pending_transactions = Transaction.objects.filter(
+            expense__isnull=True
+        ).order_by("date")
         transactions_to_process = []
 
         # Filtrar as que já tem sugestão (embora o generate_suggestion_for_transaction já faça check,
@@ -24,14 +26,18 @@ class Command(BaseCommand):
         total = len(transactions_to_process)
 
         if total == 0:
-            self.stdout.write(self.style.SUCCESS("Nenhuma transação pendente de sugestão."))
+            self.stdout.write(
+                self.style.SUCCESS("Nenhuma transação pendente de sugestão.")
+            )
             return
 
         self.stdout.write(f"Gerando sugestões para {total} transações...")
 
         try:
             for idx, tx in enumerate(transactions_to_process, 1):
-                self.stdout.write(f"[{idx}/{total}] Analisando: {tx.memo}...", ending="")
+                self.stdout.write(
+                    f"[{idx}/{total}] Analisando: {tx.memo}...", ending=""
+                )
                 sys.stdout.flush()
 
                 suggestion = generate_suggestion_for_transaction(tx)
@@ -42,7 +48,9 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.WARNING(" Falha"))
 
             self.stdout.write(self.style.SUCCESS("\nGeração de sugestões concluída!"))
-            self.stdout.write("Execute 'uv run manage.py consolidar' para revisar e aprovar as sugestões.")
+            self.stdout.write(
+                "Execute 'uv run manage.py consolidar' para revisar e aprovar as sugestões."
+            )
 
         except KeyboardInterrupt:
             self.stdout.write("\nOperação interrompida pelo usuário.")

@@ -127,5 +127,7 @@ class TestCaseInsensitiveGet:
         """Testa funcionamento com múltiplas palavras."""
         category = Category.objects.create(name="Supermercado e Mercearia")
 
-        result = case_insensitive_get(Category.objects.all(), "name", "SUPERMERCADO E MERCEARIA")
+        result = case_insensitive_get(
+            Category.objects.all(), "name", "SUPERMERCADO E MERCEARIA"
+        )
         assert result == category

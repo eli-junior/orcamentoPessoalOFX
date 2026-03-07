@@ -58,7 +58,13 @@ def test_import_ofx_success(account, mock_ofx_parser, mock_open_file):
 @pytest.mark.django_db
 def test_import_ofx_duplicate_transaction(account, mock_ofx_parser, mock_open_file):
     # Cria transação existente
-    Transaction.objects.create(fitid="fitid-dup", account=account, amount=Decimal("-50.00"), date=date(2026, 2, 1), memo="Original")
+    Transaction.objects.create(
+        fitid="fitid-dup",
+        account=account,
+        amount=Decimal("-50.00"),
+        date=date(2026, 2, 1),
+        memo="Original",
+    )
 
     # Setup do mock
     mock_ofx = MagicMock()

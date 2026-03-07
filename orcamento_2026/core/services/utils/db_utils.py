@@ -8,7 +8,9 @@ from django.db.models.functions import Lower
 T = TypeVar("T")
 
 
-def case_insensitive_lookup(queryset: QuerySet[T], field_name: str, value: str | None) -> QuerySet[T]:
+def case_insensitive_lookup(
+    queryset: QuerySet[T], field_name: str, value: str | None
+) -> QuerySet[T]:
     """
     Realiza um lookup case-insensitive que funciona corretamente com caracteres acentuados.
 
@@ -27,7 +29,9 @@ def case_insensitive_lookup(queryset: QuerySet[T], field_name: str, value: str |
         return queryset.none()
 
     # Usa Lower() para garantir comparação case-insensitive correta
-    return queryset.annotate(_lower_field=Lower(field_name)).filter(_lower_field=value.lower())
+    return queryset.annotate(_lower_field=Lower(field_name)).filter(
+        _lower_field=value.lower()
+    )
 
 
 def case_insensitive_get(

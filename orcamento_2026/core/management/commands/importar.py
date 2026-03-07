@@ -28,7 +28,11 @@ class Command(BaseCommand):
             files = [f for f in os.listdir(path_dados) if f.lower().endswith(".ofx")]
 
             if not files:
-                self.stdout.write(self.style.WARNING("Nenhum arquivo .ofx encontrado na pasta 'dados'."))
+                self.stdout.write(
+                    self.style.WARNING(
+                        "Nenhum arquivo .ofx encontrado na pasta 'dados'."
+                    )
+                )
                 return
 
             self.stdout.write("Arquivos encontrados:")
@@ -83,7 +87,9 @@ class Command(BaseCommand):
 
                 try:
                     # Default para opção 2 (Mês Corrente - índice 1 do array, mas opção 2 no input)
-                    date_choice_input = input(f"Escolha a opção (Padrão 2 - {period_options[1][1]}): ")
+                    date_choice_input = input(
+                        f"Escolha a opção (Padrão 2 - {period_options[1][1]}): "
+                    )
                     if not date_choice_input:
                         date_choice = 2
                     else:
@@ -92,36 +98,58 @@ class Command(BaseCommand):
                     if 1 <= date_choice <= len(period_options):
                         reference_date = period_options[date_choice - 1][0]
                     else:
-                        self.stdout.write(self.style.ERROR("Opção inválida. Usando mês corrente."))
+                        self.stdout.write(
+                            self.style.ERROR("Opção inválida. Usando mês corrente.")
+                        )
                         reference_date = period_options[1][0]
                 except ValueError:
-                    self.stdout.write(self.style.ERROR("Entrada inválida. Usando mês corrente."))
+                    self.stdout.write(
+                        self.style.ERROR("Entrada inválida. Usando mês corrente.")
+                    )
                     reference_date = period_options[1][0]
 
-                self.stdout.write(f"\nImportando '{selected_file}' para conta '{account.name}' com referência {reference_date}...")
+                self.stdout.write(
+                    f"\nImportando '{selected_file}' para conta '{account.name}' com referência {reference_date}..."
+                )
             else:  # Conta Corrente
                 use_transaction_date_as_reference = True
-                self.stdout.write(f"\nImportando '{selected_file}' para conta '{account.name}' (data de referência = data do lançamento)...")
+                self.stdout.write(
+                    f"\nImportando '{selected_file}' para conta '{account.name}' (data de referência = data do lançamento)..."
+                )
 
             # 4. Executar importação
             try:
-                result = import_ofx(file_path, account, reference_date, use_transaction_date_as_reference)
+                result = import_ofx(
+                    file_path,
+                    account,
+                    reference_date,
+                    use_transaction_date_as_reference,
+                )
                 new_tx_count = result["transactions_created"]
-                self.stdout.write(self.style.SUCCESS(f"Sucesso! {new_tx_count} transações novas."))
+                self.stdout.write(
+                    self.style.SUCCESS(f"Sucesso! {new_tx_count} transações novas.")
+                )
 
                 # Define o novo nome do arquivo
                 if reference_date:
-                    new_filename = f"{reference_date.strftime('%Y%m%d')}_{selected_file}"
+                    new_filename = (
+                        f"{reference_date.strftime('%Y%m%d')}_{selected_file}"
+                    )
                 else:
                     from datetime import datetime
-                    new_filename = f"{datetime.now().strftime('%Y%m%d')}_{selected_file}"
+
+                    new_filename = (
+                        f"{datetime.now().strftime('%Y%m%d')}_{selected_file}"
+                    )
                 shutil.move(file_path, os.path.join(path_procesados, new_filename))
 
                 # 5. Perguntar se deseja gerar sugestões agora
                 if new_tx_count > 0:
                     self.stdout.write("\n" + "=" * 50)
                     while True:
-                        answer = input("Deseja gerar sugestões do Larry para as novas transações agora? (S/N): ").upper()
+                        answer = input(
+                            "Deseja gerar sugestões do Larry para as novas transações agora? (S/N): "
+                        ).upper()
                         if answer in ["S", "N"]:
                             break
 
@@ -131,7 +159,9 @@ class Command(BaseCommand):
                         except KeyboardInterrupt:
                             self.stdout.write("Operação cancelada pelo usuário.")
                     else:
-                        self.stdout.write("Ok. Você pode gerar depois com 'uv run manage.py sugerir'.")
+                        self.stdout.write(
+                            "Ok. Você pode gerar depois com 'uv run manage.py sugerir'."
+                        )
                 else:
                     self.stdout.write("Nenhuma transação nova para analisar.")
 

@@ -100,11 +100,18 @@ class TestImportarCommand:
     @patch("os.listdir")
     @patch("os.path.exists")
     @patch("builtins.input")
-    def test_imports_selected_file(self, mock_input, mock_exists, mock_listdir, mock_import_ofx, mock_move):
+    def test_imports_selected_file(
+        self, mock_input, mock_exists, mock_listdir, mock_import_ofx, mock_move
+    ):
         """Testa importação de arquivo selecionado."""
         mock_exists.return_value = True
         mock_listdir.return_value = ["extrato.ofx"]
-        mock_input.side_effect = ["1", "1", "2", "N"]  # arquivo, conta, data, não gerar sugestões
+        mock_input.side_effect = [
+            "1",
+            "1",
+            "2",
+            "N",
+        ]  # arquivo, conta, data, não gerar sugestões
 
         mock_import_ofx.return_value = {"transactions_created": 5}
 
@@ -149,14 +156,28 @@ class TestImportarCommand:
 class TestSugerirCommand:
     """Testes para o comando 'sugerir'."""
 
-    @patch("orcamento_2026.core.management.commands.sugerir.generate_suggestion_for_transaction")
+    @patch(
+        "orcamento_2026.core.management.commands.sugerir.generate_suggestion_for_transaction"
+    )
     def test_generates_suggestions_for_pending(self, mock_generate):
         """Testa geração de sugestões para transações pendentes."""
         account = Account.objects.create(name="Test", type="C")
 
         # Cria transações sem sugestão
-        Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test 1")
-        Transaction.objects.create(fitid="tx2", account=account, amount=Decimal("200.00"), date=date(2026, 2, 16), memo="Test 2")
+        Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test 1",
+        )
+        Transaction.objects.create(
+            fitid="tx2",
+            account=account,
+            amount=Decimal("200.00"),
+            date=date(2026, 2, 16),
+            memo="Test 2",
+        )
 
         mock_generate.return_value = MagicMock()
 
@@ -167,17 +188,29 @@ class TestSugerirCommand:
         output = out.getvalue()
         assert "Geração de sugestões concluída" in output
 
-    @patch("orcamento_2026.core.management.commands.sugerir.generate_suggestion_for_transaction")
+    @patch(
+        "orcamento_2026.core.management.commands.sugerir.generate_suggestion_for_transaction"
+    )
     def test_skips_transactions_with_suggestions(self, mock_generate):
         """Testa que pula transações que já têm sugestões."""
         account = Account.objects.create(name="Test", type="C")
         category = Category.objects.create(name="TestCat")
         subcategory = SubCategory.objects.create(category=category, name="TestSub")
 
-        tx = Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test 1")
+        tx = Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test 1",
+        )
         # Cria sugestão existente
         TransactionSuggestion.objects.create(
-            transaction=tx, category=category, subcategory=subcategory, description="Existing", status="PENDENTE"
+            transaction=tx,
+            category=category,
+            subcategory=subcategory,
+            description="Existing",
+            status="PENDENTE",
         )
 
         out = StringIO()
@@ -214,10 +247,19 @@ class TestConsolidarCommand:
         subcategory = SubCategory.objects.create(category=category, name="TestSub")
 
         tx = Transaction.objects.create(
-            fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test 1", reference_date=date(2026, 2, 1)
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test 1",
+            reference_date=date(2026, 2, 1),
         )
         TransactionSuggestion.objects.create(
-            transaction=tx, category=category, subcategory=subcategory, description="Suggested Description", status="PENDENTE"
+            transaction=tx,
+            category=category,
+            subcategory=subcategory,
+            description="Suggested Description",
+            status="PENDENTE",
         )
 
         mock_input.side_effect = ["A", "Q"]  # Aceitar, depois sair
@@ -234,7 +276,13 @@ class TestConsolidarCommand:
         """Testa opção de ignorar transação."""
         account = Account.objects.create(name="Test", type="C")
 
-        Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test 1")
+        Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test 1",
+        )
 
         mock_input.side_effect = ["I", "Q"]  # Ignorar, depois sair
 
@@ -248,7 +296,13 @@ class TestConsolidarCommand:
         """Testa opção de sair."""
         account = Account.objects.create(name="Test", type="C")
 
-        Transaction.objects.create(fitid="tx1", account=account, amount=Decimal("100.00"), date=date(2026, 2, 15), memo="Test 1")
+        Transaction.objects.create(
+            fitid="tx1",
+            account=account,
+            amount=Decimal("100.00"),
+            date=date(2026, 2, 15),
+            memo="Test 1",
+        )
 
         mock_input.side_effect = ["Q"]  # Sair imediatamente
 

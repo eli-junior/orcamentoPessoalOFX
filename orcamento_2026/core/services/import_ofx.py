@@ -50,7 +50,9 @@ def import_ofx(
         date_obj: date = tx.date.date()
 
         # Para contas correntes, usa a data da transação como referência
-        tx_reference_date = date_obj if use_transaction_date_as_reference else reference_date
+        tx_reference_date = (
+            date_obj if use_transaction_date_as_reference else reference_date
+        )
         _, created = account.transaction_set.get_or_create(
             fitid=tx.id,
             defaults={

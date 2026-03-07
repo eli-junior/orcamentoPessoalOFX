@@ -27,7 +27,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ("email",)
     list_display = ("email", "first_name", "last_name", "is_staff")
     search_fields = ("email", "first_name", "last_name")
-    
+
     fieldsets = (
         (None, {"fields": ("email", "password")}),
         (_("Personal info"), {"fields": ("first_name", "last_name")}),
@@ -45,7 +45,7 @@ class UserAdmin(BaseUserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
-    
+
     add_fieldsets = (
         (
             None,
@@ -55,7 +55,7 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
-    
+
     readonly_fields = ("last_login", "date_joined")
 
 
@@ -97,7 +97,13 @@ class ExpenseInline(admin.StackedInline):
 class TransactionAdmin(admin.ModelAdmin):
     """Admin para o modelo Transaction."""
 
-    list_display: tuple[str, str, str, str, str] = ("date", "amount", "account", "memo", "fitid")
+    list_display: tuple[str, str, str, str, str] = (
+        "date",
+        "amount",
+        "account",
+        "memo",
+        "fitid",
+    )
     list_filter: tuple[str, str] = ("account", "date")
     search_fields: tuple[str, str] = ("memo", "fitid")
     date_hierarchy = "date"
@@ -116,7 +122,11 @@ class ExpenseAdmin(admin.ModelAdmin):
         "reference_month",
         "is_ignored",
     )
-    list_filter: tuple[str, str, str] = ("reference_month", "subcategory__category", "is_ignored")
+    list_filter: tuple[str, str, str] = (
+        "reference_month",
+        "subcategory__category",
+        "is_ignored",
+    )
     search_fields: tuple[str, str] = ("description", "transaction__memo")
     autocomplete_fields: list[str] = ["subcategory", "transaction"]
 

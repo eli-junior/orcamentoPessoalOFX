@@ -3,7 +3,13 @@ from datetime import date
 from decimal import Decimal
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth
-from orcamento_2026.core.models import Account, Category, SubCategory, Transaction, Expense
+from orcamento_2026.core.models import (
+    Account,
+    Category,
+    SubCategory,
+    Transaction,
+    Expense,
+)
 
 
 @pytest.mark.django_db
@@ -11,11 +17,17 @@ class TestDashboardFixes:
     def setup_method(self):
         self.account = Account.objects.create(name="Nubank", type="C")
         self.category = Category.objects.create(name="Alimentação")
-        self.subcategory = SubCategory.objects.create(category=self.category, name="Restaurante")
+        self.subcategory = SubCategory.objects.create(
+            category=self.category, name="Restaurante"
+        )
 
     def create_expense(self, day, amount):
         transaction = Transaction.objects.create(
-            fitid=f"trans-{day}", account=self.account, amount=Decimal(amount), date=date(2026, 2, day), memo=f"Expense day {day}"
+            fitid=f"trans-{day}",
+            account=self.account,
+            amount=Decimal(amount),
+            date=date(2026, 2, day),
+            memo=f"Expense day {day}",
         )
         return Expense.objects.create(
             transaction=transaction,
@@ -40,7 +52,10 @@ class TestDashboardFixes:
 
         # Reproducing the *current* buggy query logic from views.py:
         current_data = (
-            Expense.objects.all().values("reference_month").annotate(total=Sum("transaction__amount")).order_by("reference_month")
+            Expense.objects.all()
+            .values("reference_month")
+            .annotate(total=Sum("transaction__amount"))
+            .order_by("reference_month")
         )
         # Should be 3 records because dates are different
         assert current_data.count() == 3
@@ -68,5 +83,7 @@ class TestDashboardFixes:
         # We want positive for charts
         from django.db.models.functions import Abs
 
-        positive_total = Expense.objects.aggregate(total=Abs(Sum("transaction__amount")))["total"]
+        positive_total = Expense.objects.aggregate(
+            total=Abs(Sum("transaction__amount"))
+        )["total"]
         assert positive_total == Decimal("100.00")
