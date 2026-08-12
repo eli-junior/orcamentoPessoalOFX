@@ -1,68 +1,72 @@
 [project]
-name = "orcamento-2026"
+name = "orcamento"
 version = "0.0.1"
 description = "Le os arquivo OFX dos bancos que utilizo e grava no banco de dados com informações sobre a compra, categoria etc"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14,<3.15"
 dependencies = [
-    "django==6.0.2",
-    "psycopg2-binary==2.9.11",
-    "dj-database-url==3.1.0",
-    "gunicorn==25.1.0",
+    "django==6.0.8",
+    "psycopg2-binary==2.9.12",
+    "dj-database-url==3.1.2",
+    "gunicorn==26.0.0",
     "python-decouple==3.8",
-    "whitenoise==6.11.0",
+    "whitenoise==6.12.0",
     "ofxparse==0.21",
-    "requests==2.32.5",
-    "python-dateutil>=2.9.0.post0",
-    "django-widget-tweaks==1.5.0",
-    "plotly==6.0.0",
-    "django-cors-headers==4.7.0",
-    "pandas==2.2.3",
+    "requests==2.34.2",
+    "python-dateutil==2.9.0.post0",
+    "django-widget-tweaks==1.5.1",
+    "plotly==6.9.0",
+    "django-cors-headers==4.9.0",
+    "pandas==3.0.5",
 ]
 
 [dependency-groups]
 dev = [
-    "black==26.1.0",
-    "faker==40.4.0",
-    "ipython==9.10.0",
-    "invoke==2.2.1",
-    "isort==7.0.0",
+    "black==26.5.1",
+    "faker==40.36.0",
+    "ipython==9.16.1",
+    "invoke==3.0.3",
+    "isort==8.0.1",
     "parameterized==0.9.0",
-    "django-debug-toolbar==6.2.0",
+    "django-debug-toolbar==7.0.0",
     "django-extensions==4.1",
-    "pytest==9.0.2",
-    "pytest-cov==7.0.0",
-    "pytest-django==4.11.1",
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "pytest-django==4.12.0",
     "pytest-subtests==0.15.0",
     "pytest-sugar==1.1.1",
-    "pre-commit==4.5.1"
+    "pre-commit==4.6.1"
 ]
 
 [tool.black]
 line-length = 140
-target-version = ['py313']
+target-version = ['py314']
 
 [tool.isort]
 profile = "django"
 line_length = 140
 
+[tool.ruff.lint]
+# Mantém o conjunto clássico de regras explícito entre upgrades do Ruff.
+select = ["E4", "E7", "E9", "F"]
+
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "orcamento_2026.settings"
+DJANGO_SETTINGS_MODULE = "orcamento.settings"
 python_files = "test_*.py"
 minversion = "7.4.0"
-pythonpath = "./orcamento-2026/**/test_*.py"
+pythonpath = "./orcamento/**/test_*.py"
 addopts = """
     -ra -q -s -x -vvv \
     --doctest-modules \
     --disable-pytest-warnings \
-    --cov=orcamento-2026 \
+    --cov=orcamento \
     --cov-report=html:coverage
     """
 
 [tool.coverage.report]
 skip_empty = true
 branch = true
-source = "orcamento-2026/**/*.py"
+source = "orcamento/**/*.py"
 omit = [
-    "orcamento-2026/**/migrations/*.py"
+    "orcamento/**/migrations/*.py"
 ]

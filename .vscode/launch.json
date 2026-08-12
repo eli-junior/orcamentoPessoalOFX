@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Python: Django",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/manage.py",
             "args": [
@@ -12,7 +12,7 @@
             "django": true,
             "justMyCode": true,
             "env": {
-                "DJANGO_SETTINGS_MODULE": "orcamento_2026.settings",
+                "DJANGO_SETTINGS_MODULE": "orcamento.settings",
                 "PYTHONPATH": "${workspaceFolder}"
             }
         }

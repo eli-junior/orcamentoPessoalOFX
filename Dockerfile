@@ -1,5 +1,5 @@
 # ── Build stage ──────────────────────────────────────────────────────────────
-FROM python:3.12-slim AS builder
+FROM python:3.14.6-slim AS builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_PROJECT_ENVIRONMENT="/opt/venv" \
@@ -29,7 +29,7 @@ COPY . .
 RUN uv sync --frozen
 
 # ── Runtime stage ─────────────────────────────────────────────────────────────
-FROM python:3.12-slim AS runtime
+FROM python:3.14.6-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     UV_PROJECT_ENVIRONMENT="/opt/venv" \
@@ -76,7 +76,7 @@ COPY --chown=appuser:appuser entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Cria diretório static para evitar warning do Django
-RUN mkdir -p /app/orcamento_2026/static
+RUN mkdir -p /app/orcamento/static
 
 # Instala Starship (prompt moderno) como root
 RUN curl -sS https://starship.rs/install.sh | sh -s -- -y

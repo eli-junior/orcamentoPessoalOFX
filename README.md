@@ -1,5 +1,5 @@
 <div align="center" style="text-align: center;">
-  <h1>Orçamento 2026</h1>
+  <h1>Orçamento Pessoal</h1>
   <p>Backend para gerenciamento de orçamento pessoal, focado em processamento de arquivos OFX e categorização inteligente.</p>
 
   <p>
@@ -14,7 +14,7 @@
 
 ## 🤔 Sobre
 
-O **Orcamento 2026** é um sistema de backend desenvolvido em Django para auxiliar no controle financeiro pessoal. Ele permite a importação de extratos bancários (arquivos OFX), consolidação de transações e sugestão automática de categorias utilizando inteligência artificial.
+O **Orçamento Pessoal** é um sistema de backend desenvolvido em Django para auxiliar no controle financeiro pessoal. Ele permite a importação de extratos bancários (arquivos OFX), consolidação de transações e sugestão automática de categorias utilizando inteligência artificial.
 
 ## 🚀 Tecnologias
 
@@ -86,26 +86,25 @@ A aplicação estará disponível em `http://localhost:8000`.
 
 ### **Execução Local (Sem Docker)** 🖥️
 
-Você precisará do [Python 3.12+](https://www.python.org/) e [UV](https://github.com/astral-sh/uv) instalados.
+Você precisará do [Python 3.14.6](https://www.python.org/) e [UV](https://github.com/astral-sh/uv) instalados.
 
-1. **Instalar dependências**:
-   ```bash
-   uv sync
+1. **Subir a aplicação com PowerShell e UV**:
+   ```powershell
+   .\start.ps1
    ```
 
-2. **Ativar o ambiente virtual**:
-   ```bash
-   source .venv/bin/activate
+   O script valida o UV, cria o `.env` a partir de `.env-contrib` quando necessário,
+   sincroniza as dependências travadas em `uv.lock`, executa as verificações e
+   migrações do Django e inicia o servidor em `http://127.0.0.1:8000`.
+
+   Para alterar endereço ou porta, ou pular etapas já executadas:
+   ```powershell
+   .\start.ps1 -BindAddress 0.0.0.0 -Port 8001
+   .\start.ps1 -SkipSync -SkipMigrations
    ```
 
-3. **Configurar variáveis de ambiente**:
-   Crie um arquivo `.env` na raiz baseado no `.env-compose` ou configure as variáveis necessárias para conexão com banco de dados local.
-
-4. **Executar migrações e rodar**:
-   ```bash
-   python manage.py migrate
-   python manage.py runserver
-   ```
+   Não é necessário ativar manualmente o ambiente virtual: todos os comandos
+   Python são executados por `uv run`.
 
 Também é possível usar o `Makefile` para atalhos:
 - `make install`: Instala dependências

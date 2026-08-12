@@ -1,11 +1,11 @@
 # ═══════════════════════════════════════════════════════════════════════════════
-# Makefile - Orçamento 2026
+# Makefile - Orçamento Pessoal
 # Gerenciamento de ambiente Django com Docker e UV
 # ═══════════════════════════════════════════════════════════════════════════════
 
 # ── Configurações ─────────────────────────────────────────────────────────────
 ENV               ?= development
-PROJECT           := orcamento_2026
+PROJECT           := orcamento
 COMPOSE_FILE      := compose.yml
 TEST_FOLDER       := ./tests
 
@@ -30,7 +30,7 @@ all: help
 help: ## Mostra esta ajuda
 	@echo ""
 	@echo "$(BOLD)$(CYAN)╔════════════════════════════════════════════════════════════════╗$(RESET)"
-	@echo "$(BOLD)$(CYAN)║           Orçamento 2026 - Comandos Disponíveis               ║$(RESET)"
+	@echo "$(BOLD)$(CYAN)║          Orçamento Pessoal - Comandos Disponíveis              ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)╚════════════════════════════════════════════════════════════════╝$(RESET)"
 	@echo ""
 	@echo "$(BOLD)$(GREEN)🐳 Docker:$(RESET)"

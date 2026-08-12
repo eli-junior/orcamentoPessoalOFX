@@ -52,7 +52,7 @@ services:
       - .env
     environment:
       - TZ=America/Sao_Paulo
-      - DJANGO_SETTINGS_MODULE=orcamento_2026.settings.development
+      - DJANGO_SETTINGS_MODULE=orcamento.settings.development
     depends_on:
       db:
         condition: service_healthy
