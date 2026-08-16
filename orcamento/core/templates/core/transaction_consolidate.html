@@ -73,8 +73,12 @@
                                            class="block text-sm font-medium leading-6 text-gray-900">
                                         {{ form.category.label }}
                                     </label>
-                                    <div class="mt-2">
-                                        {{ form.category }}
+                                    <div class="mt-2 flex items-center gap-2">
+                                        <div class="min-w-0 flex-1">{{ form.category }}</div>
+                                        <button type="button" id="add-category-button"
+                                                class="shrink-0 rounded-md bg-white px-3 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm ring-1 ring-inset ring-indigo-300 hover:bg-indigo-50">
+                                            +
+                                        </button>
                                     </div>
                                     {% if form.category.errors %}<p class="mt-2 text-sm text-red-600">{{ form.category.errors.0 }}</p>{% endif %}
                                 </div>
@@ -84,8 +88,12 @@
                                            class="block text-sm font-medium leading-6 text-gray-900">
                                         {{ form.subcategory.label }}
                                     </label>
-                                    <div class="mt-2">
-                                        {{ form.subcategory }}
+                                    <div class="mt-2 flex items-center gap-2">
+                                        <div class="min-w-0 flex-1">{{ form.subcategory }}</div>
+                                        <button type="button" id="add-subcategory-button"
+                                                class="shrink-0 rounded-md bg-white px-3 py-2.5 text-sm font-semibold text-indigo-600 shadow-sm ring-1 ring-inset ring-indigo-300 hover:bg-indigo-50 disabled:cursor-not-allowed disabled:opacity-50">
+                                            +
+                                        </button>
                                     </div>
                                     {% if form.subcategory.errors %}<p class="mt-2 text-sm text-red-600">{{ form.subcategory.errors.0 }}</p>{% endif %}
                                 </div>
@@ -128,15 +136,56 @@
                 </div>
             </div>
         </div>
+
+        <dialog id="category-dialog" class="w-full max-w-md rounded-xl p-0 shadow-xl backdrop:bg-gray-900/50">
+            <form id="quick-category-form" class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900">Adicionar categoria</h3>
+                <p class="mt-1 text-sm text-gray-500">Ela será selecionada automaticamente.</p>
+                <label for="quick-category-name" class="mt-5 block text-sm font-medium text-gray-900">Nome</label>
+                <input id="quick-category-name" name="name" required maxlength="100"
+                       class="mt-2 block w-full rounded-md border-0 px-3 py-2.5 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600"
+                       placeholder="Ex: Alimentação">
+                <p class="quick-error mt-2 hidden text-sm text-red-600"></p>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" data-close-dialog class="px-3 py-2 text-sm font-semibold text-gray-700">Cancelar</button>
+                    <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500">Adicionar</button>
+                </div>
+            </form>
+        </dialog>
+
+        <dialog id="subcategory-dialog" class="w-full max-w-md rounded-xl p-0 shadow-xl backdrop:bg-gray-900/50">
+            <form id="quick-subcategory-form" class="p-6">
+                <h3 class="text-lg font-semibold text-gray-900">Adicionar subcategoria</h3>
+                <p class="mt-1 text-sm text-gray-500">Será criada dentro da categoria selecionada.</p>
+                <label for="quick-subcategory-name" class="mt-5 block text-sm font-medium text-gray-900">Nome</label>
+                <input id="quick-subcategory-name" name="name" required maxlength="100"
+                       class="mt-2 block w-full rounded-md border-0 px-3 py-2.5 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600"
+                       placeholder="Ex: Restaurantes">
+                <p class="quick-error mt-2 hidden text-sm text-red-600"></p>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" data-close-dialog class="px-3 py-2 text-sm font-semibold text-gray-700">Cancelar</button>
+                    <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-500">Adicionar</button>
+                </div>
+            </form>
+        </dialog>
     </div>
 {% endblock content %}
 
 {% block extra_js %}
     <script>
+    const categorySelect = document.getElementById('{{ form.category.id_for_label }}');
+    const subcategorySelect = document.getElementById('{{ form.subcategory.id_for_label }}');
+    const addSubcategoryButton = document.getElementById('add-subcategory-button');
+
+    function syncSubcategoryButton() {
+        addSubcategoryButton.disabled = !categorySelect.value;
+        addSubcategoryButton.title = categorySelect.value ? '' : 'Selecione ou adicione uma categoria primeiro';
+    }
+
     // Atualiza subcategorias quando a categoria muda
-    document.getElementById('{{ form.category.id_for_label }}').addEventListener('change', function() {
+    categorySelect.addEventListener('change', function() {
         var categoryId = this.value;
-        var subcategorySelect = document.getElementById('{{ form.subcategory.id_for_label }}');
+        syncSubcategoryButton();
 
         if (categoryId) {
             fetch('/api/subcategories/?category=' + categoryId)
@@ -148,5 +197,58 @@
             subcategorySelect.innerHTML = '<option value="">---------</option>';
         }
     });
+
+    async function submitQuickForm(form, url, extraData = {}) {
+        const error = form.querySelector('.quick-error');
+        const data = new FormData(form);
+        Object.entries(extraData).forEach(([key, value]) => data.set(key, value));
+        error.classList.add('hidden');
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value},
+            body: data,
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            const firstField = Object.values(result.errors || {})[0];
+            error.textContent = firstField?.[0]?.message || 'Não foi possível salvar. Tente novamente.';
+            error.classList.remove('hidden');
+            return null;
+        }
+        return result;
+    }
+
+    const categoryDialog = document.getElementById('category-dialog');
+    const subcategoryDialog = document.getElementById('subcategory-dialog');
+    document.getElementById('add-category-button').addEventListener('click', () => categoryDialog.showModal());
+    addSubcategoryButton.addEventListener('click', () => {
+        if (categorySelect.value) subcategoryDialog.showModal();
+    });
+    document.querySelectorAll('[data-close-dialog]').forEach(button => {
+        button.addEventListener('click', () => button.closest('dialog').close());
+    });
+
+    document.getElementById('quick-category-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const result = await submitQuickForm(this, '{% url "quick_create_category" %}');
+        if (!result) return;
+        categorySelect.add(new Option(result.name, result.id, true, true));
+        subcategorySelect.innerHTML = '<option value="">---------</option>';
+        syncSubcategoryButton();
+        this.reset();
+        categoryDialog.close();
+        subcategoryDialog.showModal();
+    });
+
+    document.getElementById('quick-subcategory-form').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const result = await submitQuickForm(this, '{% url "quick_create_subcategory" %}', {category: categorySelect.value});
+        if (!result) return;
+        subcategorySelect.add(new Option(result.name, result.id, true, true));
+        this.reset();
+        subcategoryDialog.close();
+    });
+
+    syncSubcategoryButton();
     </script>
 {% endblock extra_js %}

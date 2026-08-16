@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Contas - Orçamento Pessoal{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900">Contas</h2>
+            <p class="mt-1 text-sm text-gray-500">Gerencie contas bancárias e cartões.</p>
+        </div>
+        <a href="{% url 'account_create' %}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">+ Nova Conta</a>
+    </div>
+    <form method="get" class="flex gap-4 rounded-lg bg-white p-4 shadow">
+        <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Buscar contas..." class="block flex-1 rounded-md border-0 px-3 py-2.5 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600">
+        <button class="rounded-md bg-white px-3 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Buscar</button>
+    </form>
+    <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+        <ul class="divide-y divide-gray-200">
+            {% for account in accounts %}
+            <li class="flex items-center justify-between px-4 py-4 sm:px-6">
+                <div>
+                    <p class="font-medium text-indigo-600">{{ account.name }}</p>
+                    <p class="mt-1 text-sm text-gray-500">{{ account.get_type_display }}</p>
+                </div>
+                <a href="{% url 'account_update' account.pk %}" class="text-sm font-medium text-indigo-600 hover:text-indigo-900">Editar</a>
+            </li>
+            {% empty %}
+            <li class="px-4 py-10 text-center text-gray-500">
+                <p>Nenhuma conta encontrada.</p>
+                <a href="{% url 'account_create' %}" class="mt-2 inline-block font-medium text-indigo-600">Criar primeira conta</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

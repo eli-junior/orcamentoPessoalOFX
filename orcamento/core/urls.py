@@ -11,6 +11,14 @@ urlpatterns = [
     path("", views.home, name="home"),
     # Dashboard
     path("dashboard/", views.dashboard, name="dashboard"),
+    # Contas
+    path("contas/", views.AccountListView.as_view(), name="account_list"),
+    path("contas/nova/", views.AccountCreateView.as_view(), name="account_create"),
+    path(
+        "contas/<int:pk>/editar/",
+        views.AccountUpdateView.as_view(),
+        name="account_update",
+    ),
     # Autenticação
     path(
         "login/",
@@ -75,6 +83,16 @@ urlpatterns = [
         "transacoes/<int:pk>/consolidar/",
         views.transaction_consolidate,
         name="transaction_consolidate",
+    ),
+    path(
+        "api/categorias/criar/",
+        views.quick_create_category,
+        name="quick_create_category",
+    ),
+    path(
+        "api/subcategorias/criar/",
+        views.quick_create_subcategory,
+        name="quick_create_subcategory",
     ),
     # Sugestões (Larry)
     path("sugestoes/", views.suggestion_list, name="suggestion_list"),

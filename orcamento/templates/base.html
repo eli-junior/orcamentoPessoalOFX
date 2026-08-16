@@ -68,6 +68,10 @@
                                            class="{% if request.resolver_match.url_name == 'expense_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
                                             Despesas
                                         </a>
+                                        <a href="{% url 'account_list' %}"
+                                           class="{% if request.resolver_match.url_name == 'account_list' or request.resolver_match.url_name == 'account_create' or request.resolver_match.url_name == 'account_update' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
+                                            Contas
+                                        </a>
                                         <a href="{% url 'category_list' %}"
                                            class="{% if request.resolver_match.url_name == 'category_list' %}bg-indigo-700{% else %}hover:bg-indigo-500{% endif %} text-white rounded-md px-3 py-2 text-sm font-medium">
                                             Categorias
@@ -135,6 +139,8 @@
                                class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Transações</a>
                             <a href="{% url 'expense_list' %}"
                                class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Despesas</a>
+                            <a href="{% url 'account_list' %}"
+                               class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Contas</a>
                             <a href="{% url 'category_list' %}"
                                class="text-white hover:bg-indigo-500 block rounded-md px-3 py-2 text-base font-medium">Categorias</a>
                             <a href="{% url 'suggestion_list' %}"

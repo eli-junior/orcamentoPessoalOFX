@@ -17,8 +17,10 @@ User = get_user_model()
 class UIViewsTest(TestCase):
     def setUp(self):
         # Create user and login
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.client.login(username="testuser", password="password")
+        self.user = User.objects.create_user(
+            email="testuser@example.com", password="password"
+        )
+        self.client.login(username="testuser@example.com", password="password")
 
         # Create basic data
         self.account = Account.objects.create(name="Test Account")
@@ -113,6 +115,38 @@ class UIViewsTest(TestCase):
         response = self.client.get(reverse("import_ofx"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "core/import_ofx.html")
+
+    def test_account_can_be_created_from_frontend(self):
+        response = self.client.post(
+            reverse("account_create"), {"name": "Nubank", "type": "C"}
+        )
+        self.assertRedirects(response, reverse("account_list"))
+        self.assertTrue(Account.objects.filter(name="Nubank", type="C").exists())
+
+    def test_account_list_shows_accounts(self):
+        response = self.client.get(reverse("account_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Test Account")
+
+    def test_quick_create_category(self):
+        response = self.client.post(
+            reverse("quick_create_category"), {"name": "Alimentação"}
+        )
+        self.assertEqual(response.status_code, 201)
+        category = Category.objects.get(name="Alimentação")
+        self.assertEqual(response.json()["id"], category.pk)
+
+    def test_quick_create_subcategory(self):
+        response = self.client.post(
+            reverse("quick_create_subcategory"),
+            {"name": "Restaurantes", "category": self.category.pk},
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(
+            SubCategory.objects.filter(
+                name="Restaurantes", category=self.category
+            ).exists()
+        )
 
     def test_redirect_if_not_logged_in(self):
         """Test if unauthenticated user is redirected to login"""

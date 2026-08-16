@@ -14,12 +14,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.db.models import Count, Q, Sum
 from django.db.models.functions import Abs, TruncMonth
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
+from django.views.decorators.http import require_POST
 
 from orcamento.core.forms import (
+    AccountForm,
     CategoryForm,
     ConsolidationForm,
     DashboardFilterForm,
@@ -47,6 +49,52 @@ from orcamento.core.services.suggestions import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+# =============================================================================
+# Account Views
+# =============================================================================
+
+
+class AccountListView(LoginRequiredMixin, ListView):
+    """Lista de contas."""
+
+    model = Account
+    template_name = "core/account_list.html"
+    context_object_name = "accounts"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search = self.request.GET.get("search")
+        if search:
+            queryset = queryset.filter(name__icontains=search)
+        return queryset.order_by("name")
+
+
+class AccountCreateView(LoginRequiredMixin, CreateView):
+    """Criar uma conta."""
+
+    model = Account
+    form_class = AccountForm
+    template_name = "core/account_form.html"
+    success_url = reverse_lazy("account_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Conta criada com sucesso!")
+        return super().form_valid(form)
+
+
+class AccountUpdateView(LoginRequiredMixin, UpdateView):
+    """Editar uma conta."""
+
+    model = Account
+    form_class = AccountForm
+    template_name = "core/account_form.html"
+    success_url = reverse_lazy("account_list")
+
+    def form_valid(self, form):
+        messages.success(self.request, "Conta atualizada com sucesso!")
+        return super().form_valid(form)
 
 
 # =============================================================================
@@ -576,6 +624,35 @@ def transaction_consolidate(request, pk):
             "transaction": transaction,
         },
     )
+
+
+@login_required
+@require_POST
+def quick_create_category(request):
+    """Cria uma categoria sem sair do fluxo de consolidação."""
+    form = CategoryForm(request.POST)
+    if form.is_valid():
+        category = form.save()
+        return JsonResponse({"id": category.pk, "name": category.name}, status=201)
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+
+@login_required
+@require_POST
+def quick_create_subcategory(request):
+    """Cria uma subcategoria sem sair do fluxo de consolidação."""
+    form = SubCategoryForm(request.POST)
+    if form.is_valid():
+        subcategory = form.save()
+        return JsonResponse(
+            {
+                "id": subcategory.pk,
+                "name": subcategory.name,
+                "category_id": subcategory.category_id,
+            },
+            status=201,
+        )
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
 
 # =============================================================================

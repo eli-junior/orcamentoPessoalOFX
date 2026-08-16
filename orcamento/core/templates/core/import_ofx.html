@@ -23,7 +23,10 @@
                         </label>
                         <div class="mt-2">{{ form.account }}</div>
                         {% if form.account.errors %}<p class="mt-2 text-sm text-red-600">{{ form.account.errors.0 }}</p>{% endif %}
-                        <p class="mt-1 text-xs text-gray-500">Selecione a conta bancária correspondente ao arquivo</p>
+                        <p class="mt-1 text-xs text-gray-500">
+                            Selecione a conta bancária correspondente ao arquivo.
+                            <a href="{% url 'account_create' %}" class="font-medium text-indigo-600 hover:text-indigo-500">Cadastrar nova conta</a>
+                        </p>
                     </div>
                     <div>
                         <label for="{{ form.reference_date.id_for_label }}"
